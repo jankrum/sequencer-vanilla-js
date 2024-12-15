@@ -1,0 +1,236 @@
+:root {
+    --red: #b23535;
+    --green: #38ad5f;
+    --blue: #464ca5;
+    --white: #e2e8f0;
+    --black: #262626;
+
+    --text-color: var(--black);
+    --background-color: var(--white);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: var(--white);
+        --background-color: var(--black);
+    }
+}
+
+* {
+    color: inherit;
+    background-color: inherit;
+    border-color: inherit;
+    font-family: inherit;
+    box-sizing: inherit;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border-color: var(--text-color);
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Config                                   */
+/* -------------------------------------------------------------------------- */
+
+#config-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+fieldset {
+    margin-bottom: 20px;
+}
+
+legend {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.type-div {
+    margin-bottom: 10px;
+}
+
+label {
+    user-select: none;
+}
+
+input[type="radio"]:disabled+label {
+    text-decoration: line-through;
+}
+
+button {
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border: 1px solid var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 Transporter                                */
+/* -------------------------------------------------------------------------- */
+
+.transporter-button {
+    width: 2em;
+    height: 2em;
+
+    border: 1.5px solid;
+    border-radius: 50%;
+    font-size: 2.5rem;
+
+    padding: 1rem;
+    /* align-items: center; */
+    margin: 0 0.5rem 2rem 0.5rem;
+
+    cursor: pointer;
+
+    color: var(--background-color);
+    background-color: var(--text-color);
+
+    transition: transform 0.2s;
+}
+
+.transporter-button:hover:enabled {
+    transform: scale(1.1);
+}
+
+.transporter-button:disabled {
+    color: var(--text-color);
+    background-color: var(--background-color);
+
+    cursor: auto;
+}
+
+#transporter {
+    text-align: center;
+
+    border-bottom: 1px solid var(--text-color);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Part Container                               */
+/* -------------------------------------------------------------------------- */
+
+.lcd {
+    padding: 0.5em 1em;
+    /* border: 0px solid; */
+    border-radius: 5px;
+
+    width: 16ch;
+    min-height: 4em;
+    line-height: 1.5;
+
+    text-align: left;
+
+    font-family: 'hd44780', monospace;
+
+    color: var(--background-color);
+    background-color: var(--text-color);
+}
+
+input[type="range"] {
+    margin-top: 1em;
+    width: 100%;
+}
+
+.controller-module {
+    padding: 1em;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    border: 1px solid;
+    font-size: 1vw;
+}
+
+.component-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 100%;
+    height: 3rem;
+    line-height: 3rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.controller-row {
+    border-top: 1px solid;
+    justify-content: center;
+    align-items: center;
+    overflow-y: scroll;
+    height: 40vw;
+}
+
+.controller {
+    padding-top: 0;
+
+    border: 1px solid;
+}
+
+.note-on {
+    color: var(--green);
+}
+
+.note-off {
+    color: var(--red);
+}
+
+.all-notes-off {
+    color: var(--blue);
+}
+
+.message-row {
+    width: 100%;
+    height: 10vw;
+    overflow-y: scroll;
+}
+
+.synthesizer-row {
+    width: 100%;
+}
+
+.synthesizer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    border: 1px solid;
+}
+
+.part {
+    text-align: center;
+    border: 1px solid;
+    min-width: 20%;
+}
+
+#part-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: start;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                    Misc                                    */
+/* -------------------------------------------------------------------------- */
+
+.hidden {
+    display: none;
+}

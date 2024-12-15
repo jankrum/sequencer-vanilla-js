@@ -1,0 +1,8 @@
+Getting a config
+
+The first thing we always do is check the url for an existing config.
+If there is a config there, we check to see if it is valid.
+If it is valid, then we are done.
+If it is not valid, then we remove it from the url and go to the next step.
+
+The next 
