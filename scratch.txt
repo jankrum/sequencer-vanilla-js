@@ -5,4 +5,157 @@ If there is a config there, we check to see if it is valid.
 If it is valid, then we are done.
 If it is not valid, then we remove it from the url and go to the next step.
 
-The next 
+
+In Javascript, I need to get a config object using an async function.
+When I try to get the config, I want to check the URL first if there is a valid config there encoded as a JSON object represented with btoa that is under a specific query parameter.
+If there is one there, and it is valid, then the function will return the deserialized object.
+If there is one and it is invalid, then remove that query param from the URL and proceed to the next stage.
+If there is no config in the URL, then proceed to the next stage: using DOM elements to get the config from the user.
+DOM elements will be created programmatically, have eventListeners attached to them, and appended to the DOM in the document body, where it will be the only elements in the DOM.
+When the user clicks a submit button, the values for the inputs will be read and made into a config object that is checked using the same validation for the URL.
+If the config from the url is valid, the function will return the config object.
+If the config is not valid, then the invalid inputs will display what is wrong with them.
+The user can then submit again, and the same check is performed.
+There is a checkbox the user can click to store the config they make into the URL as a query parameter.
+When the user successfully submits a config, the DOM elements are removed from the DOM.
+
+These are type definitions for the Config object under the Config type.
+```typescript
+export type PartName = 'bass' | 'drum' | 'keys' | 'lead'
+
+export type DuplexMidiConfig = {
+    input: string
+    output: string
+}
+
+export type OneIndexedMidiChannel = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16
+
+export type SimplexMidiConfig = {
+    output: string
+    channel: OneIndexedMidiChannel
+}
+
+export enum TransporterType {
+    Dom,
+    Midi,
+}
+
+export type DomTransporterConfig = {
+    type: TransporterType.Dom
+}
+
+export type MidiTransporterConfig = {
+    type: TransporterType.Midi
+    midi: DuplexMidiConfig
+}
+
+export type TransporterConfig = DomTransporterConfig | MidiTransporterConfig
+
+export enum ControllerType {
+    Dom,
+    Midi,
+}
+
+export type DomControllerConfig = {
+    type: ControllerType.Dom
+}
+
+export type MidiControllerConfig = {
+    type: ControllerType.Midi
+    midi: DuplexMidiConfig
+}
+
+export type ControllerConfig = DomControllerConfig | MidiControllerConfig
+
+export enum SynthesizerType {
+    Dom,
+    Midi,
+}
+
+export type DomSynthesizerConfig = {
+    type: SynthesizerType.Dom
+}
+
+export type MidiSynthesizerConfig = {
+    type: SynthesizerType.Midi
+    midi: SimplexMidiConfig
+}
+
+export type SynthesizerConfig = DomSynthesizerConfig | MidiSynthesizerConfig
+
+export type PartConfig = {
+    controller: ControllerConfig
+    synthesizer: SynthesizerConfig
+}
+
+export type PartsConfig = {
+    [key in PartName]: PartConfig
+}
+
+export type Config = {
+    transporter: TransporterConfig
+    parts: PartsConfig
+}
+```
+The project I am working on now does not use typescript, but I wanted to give you an idea of how the config would be look.
+
+When choosing a MIDI port, it should be a select input element with options for the MIDI devices.
+There is a button the user can click to refresh the MIDI ports listed.
+
+Import the file './utility.js' which has the following functions:
+```javascript
+export const midiAccess = await (async () => {
+    try {
+        return await navigator.requestMIDIAccess({ sysex: true })
+    } catch {
+        return null
+    }
+})()
+
+//-----------------------------------------------------------------------------
+
+export function dm(tag, attributes = {}, ...children) {
+    const element = document.createElement(tag)
+
+    for (const [key, value] of Object.entries(attributes)) {
+        element.setAttribute(key, value)
+    }
+
+    for (const child of children) {
+        if (typeof child === 'string') {
+            element.appendChild(document.createTextNode(child))
+        } else if (child) {
+            element.appendChild(child)
+        }
+    }
+
+    return element
+}
+```
+Use dm to create all of your elements and midiAccess to get the MIDI ports.
+
+Use an object oriented approach to model the transporter portion, the parts, the simplex midi and duplex midi portions of the config.
+
+In your response, write vanilla javascript code that exports default a function called getConfig that takes no arguments and returns a Promise<Config> that resolves with the config object.
+
+--------------------------------------------------------------------------------------------------------
+
+Write an HTML file that is a MIDI sequencer app.
+When the page is opened, the URL is checked to see if it contains a config.
+If it does, then the config is used to set up the sequencer.
+If it does not, then the user is prompted to enter a config.
+The config says what MIDI device names and channels to use for the synthesizers.
+There are 4 different parts: bass, drum, keys, and lead.
+After the config loads, there are media transport controls for previous, play, pause, stop, and next.
+The previous and next buttons are disabled if there is no previous or next chart to play.
+Each chart is a script that is loaded and sends MIDI messages.
+The play button starts the chart.
+The pause button pauses the chart.
+The stop button stops the chart.
+The previous button stops the chart goes to the previous chart.
+The next button stops the chart goes to the next chart.
+When a chart is loaded, the source code is displayed in a textarea.
+The user can edit the source code for the chart and click a button to save the changes.
+When the user saves the changes, the chart is reloaded with the new source code.
+Include 3 charts: one that plays a middle c on the lead synth for 4 beats, one that plays a c major scale on the bass synth, and a simple blues song that uses all 4 parts.
+Write a single HTML file that contains all of the styles and code for the app.
