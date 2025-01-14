@@ -1,5 +1,8 @@
 import { dm, midiAccess } from './utility.js'
-import { PARTS, TRANSPORTER_TYPE, CONTROLLER_TYPE, SYNTHESIZER_TYPE } from './constants.js'
+import { PARTS } from './sequencer.js'
+import { TRANSPORTER_TYPE_ENUM } from './transporter.js'
+import { CONTROLLER_TYPE_ENUM } from './controller.js'
+import { SYNTHESIZER_TYPE_ENUM } from './synthesizer.js'
 
 function getProblems(config) {
     const problems = []
@@ -12,9 +15,9 @@ function getProblems(config) {
     if (!config.transporter) {
         problems.push('Missing transporter')
     } else {
-        if (!Object.values(TRANSPORTER_TYPE).includes(config.transporter.type)) {
+        if (!Object.values(TRANSPORTER_TYPE_ENUM).includes(config.transporter.type)) {
             problems.push('Invalid transporter type')
-        } else if (config.transporter.type === TRANSPORTER_TYPE.MIDI && !midiAccess) {
+        } else if (config.transporter.type === TRANSPORTER_TYPE_ENUM.MIDI && !midiAccess) {
             problems.push('Cannot use MIDI transporter without MIDI access')
         }
     }
@@ -33,9 +36,9 @@ function getProblems(config) {
             if (!partConfig.controller) {
                 problems.push(`Missing controller for part: ${part}`)
             } else {
-                if (!Object.values(CONTROLLER_TYPE).includes(partConfig.controller.type)) {
+                if (!Object.values(CONTROLLER_TYPE_ENUM).includes(partConfig.controller.type)) {
                     problems.push(`Invalid controller type for part: ${part}`)
-                } else if (partConfig.controller.type === CONTROLLER_TYPE.MIDI && !midiAccess) {
+                } else if (partConfig.controller.type === CONTROLLER_TYPE_ENUM.MIDI && !midiAccess) {
                     problems.push(`Cannot use MIDI controller for part: ${part} without MIDI access`)
                 }
             }
@@ -43,9 +46,9 @@ function getProblems(config) {
             if (!partConfig.synthesizer) {
                 problems.push(`Missing synthesizer for part: ${part}`)
             } else {
-                if (!Object.values(SYNTHESIZER_TYPE).includes(partConfig.synthesizer.type)) {
+                if (!Object.values(SYNTHESIZER_TYPE_ENUM).includes(partConfig.synthesizer.type)) {
                     problems.push(`Invalid synthesizer type for part: ${part}`)
-                } else if (partConfig.synthesizer.type === SYNTHESIZER_TYPE.MIDI && !midiAccess) {
+                } else if (partConfig.synthesizer.type === SYNTHESIZER_TYPE_ENUM.MIDI && !midiAccess) {
                     problems.push(`Cannot use MIDI synthesizer for part: ${part} without MIDI access`)
                 }
             }
@@ -90,14 +93,14 @@ function getConfigFromUrl() {
 function getConfigFromUser() {
     const initialConfig = {
         transporter: {
-            type: TRANSPORTER_TYPE.DOM,
+            type: TRANSPORTER_TYPE_ENUM.DOM,
         },
         parts: Object.fromEntries(PARTS.map(part => [part, {
             controller: {
-                type: CONTROLLER_TYPE.DOM,
+                type: CONTROLLER_TYPE_ENUM.DOM,
             },
             synthesizer: {
-                type: SYNTHESIZER_TYPE.DOM,
+                type: SYNTHESIZER_TYPE_ENUM.DOM,
             },
         }])),
     }
