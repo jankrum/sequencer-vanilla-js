@@ -1,6 +1,6 @@
-export const SYNTHESIZER_TYPE_ENUM = Object.freeze({
-    DOM: 0,
-    MIDI: 1,
-})
+import { makeEnum } from './utility.js'
+
+const SYNTHESIZER_TYPES = ['dom', 'midi']
+export const SYNTHESIZER_TYPE_ENUM = makeEnum(SYNTHESIZER_TYPES)
 
 export default class Synthesizer { }

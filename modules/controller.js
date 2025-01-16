@@ -1,6 +1,6 @@
-export const CONTROLLER_TYPE_ENUM = Object.freeze({
-    DOM: 0,
-    MIDI: 1,
-})
+import { makeEnum } from './utility.js'
+
+const CONTROLLER_TYPES = ['dom', 'midi']
+export const CONTROLLER_TYPE_ENUM = makeEnum(CONTROLLER_TYPES)
 
 export default class Controller { }

@@ -1,10 +1,10 @@
-import { dm, midiAccess } from './utility.js'
+import { makeEnum, dm, midiAccess } from './utility.js'
 import Transporter from './transporter.js'
 import Controller from './controller.js'
 import Synthesizer from './synthesizer.js'
 
 export const PARTS = ['bass', 'drum', 'keys', 'lead']
-export const PARTS_ENUM = Object.freeze(Object.fromEntries(PARTS.map((part, index) => [part.toUpperCase(), index])))
+export const PARTS_ENUM = makeEnum(PARTS)
 
 class Paginator { }
 

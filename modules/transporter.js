@@ -1,6 +1,6 @@
-export const TRANSPORTER_TYPE_ENUM = Object.freeze({
-    DOM: 0,
-    MIDI: 1,
-})
+import { makeEnum } from './utility.js'
+
+const TRANSPORTER_TYPES = ['dom', 'midi']
+export const TRANSPORTER_TYPE_ENUM = makeEnum(TRANSPORTER_TYPES)
 
 export default class Transporter { }

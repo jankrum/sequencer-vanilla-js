@@ -1,3 +1,9 @@
+export function makeEnum(array) {
+    return Object.freeze(Object.fromEntries(array.map((item, index) => [item, index])))
+}
+
+//-----------------------------------------------------------------------------
+
 export const midiAccess = await (async () => {
     try {
         return await navigator.requestMIDIAccess({ sysex: true })
