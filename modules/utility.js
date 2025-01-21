@@ -1,3 +1,11 @@
+export function* timesDo(n, fn) {
+    for (let i = 0; i < n; i++) {
+        yield fn(i)
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 export function makeEnum(array) {
     return Object.freeze(Object.fromEntries(array.map((item, index) => [item, index])))
 }

@@ -10,6 +10,3 @@
 // const response = await fetch('/charts/hello-world.js')
 // const text = await response.text()
 // console.log('text', eval(text))
-
-import setlist from './charts/setlist.js'
-console.log('setlist', setlist)

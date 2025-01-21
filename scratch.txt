@@ -159,3 +159,33 @@ The user can edit the source code for the chart and click a button to save the c
 When the user saves the changes, the chart is reloaded with the new source code.
 Include 3 charts: one that plays a middle c on the lead synth for 4 beats, one that plays a c major scale on the bass synth, and a simple blues song that uses all 4 parts.
 Write a single HTML file that contains all of the styles and code for the app.
+
+--------------------------------------------------------------------------------------------------------
+
+New config idea:
+Transporter:
+    -Checkbox for if it is over MIDI or not
+    -If it is over MIDI, then there are 2 select inputs for the input and output MIDI devices
+    -If it is not over MIDI, then the selects are disabled
+Band:
+    -4 parts: bass, drum, keys, lead
+    -Each part has a controller and a synthesizer
+        -Controller:
+            -Checkbox for if it is over MIDI or not
+            -If it is over MIDI, then there are 2 select inputs for the input and output MIDI devices
+            -If it is not over MIDI, then the selects are disabled
+        -Synthesizer:
+            -Checkbox for if it is over MIDI or not
+            -If it is over MIDI, then there is a select input for the output MIDI device and a number input for the output MIDI channel
+            -If it is not over MIDI, then the inputs are disabled
+Page:
+    -Checkbox for if there should be a textarea for the source code of the chart
+    -Checkbox to store the config in the URL
+
+--------------------------------------------------------------------------------------------------------
+
+Things to implement in new build:
+-Editable source code for the charts
+-MIDI transporters and controllers
+-Recording performances to a MIDI file: "%%CHART_NAME%%-%%TIMESTAMP%%.mid"
+-Controllers having richer control creation
