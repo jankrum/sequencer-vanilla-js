@@ -16,7 +16,7 @@ function appendToBodyIfNotNull(div) {
     if (div) { document.body.append(div) }
 }
 
-export default function makeSequencer(config) {
+export function makeSequencer(config) {
     // Create the transporter, paginator, and band
     const paginator = new Paginator()
     const transporter = new Transporter(config.transporter)

@@ -189,3 +189,34 @@ Things to implement in new build:
 -MIDI transporters and controllers
 -Recording performances to a MIDI file: "%%CHART_NAME%%-%%TIMESTAMP%%.mid"
 -Controllers having richer control creation
+
+--------------------------------------------------------------------------------------------------------
+
+Evolution of the project:
+
+2018-2019:
+-Came up with idea for synth show
+-Discovered Algorithmic Composition
+-Didn't put them together yet
+-Built synth case with MIDI file sequencer
+
+2019-2022:
+-Using 4 different raspberry pis all talking to each other over ethernet
+-Each pi is a different part of the band
+-They have to talk to each other to coordinate
+-They use their GPIO pins for MIDI 5-pin DIN communication
+-Was going to write it with Python
+
+2022-2023:
+-Wanted to make a way of running the show on a single computer
+-Discovered Web MIDI API
+-Learned web development
+-Started building the project in vanilla javascript
+-Wanted to be able to run with Web Audio using Tone.js
+-Wanted to be able to connect to transporter and controller over WebRTC
+-Although these ^ wouldn't be relevant for the final project, I just thought it would be really cool to do
+
+2024-2025:
+-Broke up with all packages, dependencies, and frameworks
+-Rebuilt the project in vanilla javascript
+-Just wanted to do it
