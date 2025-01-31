@@ -12,16 +12,6 @@ export function makeEnum(array) {
 
 //-----------------------------------------------------------------------------
 
-export const midiAccess = await (async () => {
-    try {
-        return await navigator.requestMIDIAccess({ sysex: true })
-    } catch {
-        return null
-    }
-})()
-
-//-----------------------------------------------------------------------------
-
 export function dm(tag, attributes = {}, ...children) {
     const element = document.createElement(tag)
 

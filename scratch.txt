@@ -164,23 +164,143 @@ Write a single HTML file that contains all of the styles and code for the app.
 
 New config idea:
 Transporter:
-    -Checkbox for if it is over MIDI or not
-    -If it is over MIDI, then there are 2 select inputs for the input and output MIDI devices
-    -If it is not over MIDI, then the selects are disabled
+    -Is MIDI checkbox
+    -MIDI input/output selects
 Band:
+    -Checkbox for if there should be a textarea for the source code of the chart
     -4 parts: bass, drum, keys, lead
     -Each part has a controller and a synthesizer
         -Controller:
-            -Checkbox for if it is over MIDI or not
-            -If it is over MIDI, then there are 2 select inputs for the input and output MIDI devices
-            -If it is not over MIDI, then the selects are disabled
+            -Is MIDI checkbox
+            -MIDI input/output selects
         -Synthesizer:
             -Checkbox for if it is over MIDI or not
-            -If it is over MIDI, then there is a select input for the output MIDI device and a number input for the output MIDI channel
-            -If it is not over MIDI, then the inputs are disabled
-Page:
-    -Checkbox for if there should be a textarea for the source code of the chart
+            -MIDI output select
+            -MIDI channel input
+Misc:
     -Checkbox to store the config in the URL
+
+{
+    transporter: {
+        isMidi: false,
+    },
+    band: {
+        parts: {
+            bass: {
+                controller: {
+                    isMidi: false,
+                },
+                synthesizer: {
+                    isMidi: false,
+                },
+            },
+            drum: {
+                controller: {
+                    isMidi: false,
+                },
+                synthesizer: {
+                    isMidi: false,
+                },
+            },
+            keys: {
+                controller: {
+                    isMidi: false,
+                },
+                synthesizer: {
+                    isMidi: false,
+                },
+            },
+            lead: {
+                controller: {
+                    isMidi: false,
+                },
+                synthesizer: {
+                    isMidi: false,
+                },
+            },
+        showSourceCode: false,
+        },
+    },
+}
+
+{
+    transporter: {
+        isMidi: true,
+        ports: {
+            input: '%%TRANSPORTER_MIDI_INPUT%%',
+            output: '%TRANSPORTER_%MIDI_OUTPUT%%',
+        }
+    },
+    band: {
+        parts: {
+            bass: {
+                controller: {
+                    isMidi: true,
+                    ports: {
+                        input: '%%BASS_CONTROLLER_MIDI_INPUT%%',
+                        output: '%%BASS_CONTROLLER_MIDI_OUTPUT%%',
+                    }
+                },
+                synthesizer: {
+                    isMidi: true,
+                    ports: {
+                        output: '%%BASS_SYNTHESIZER_MIDI_OUTPUT%%',
+                        channel: '%%BASS_SYNTHESIZER_MIDI_CHANNEL%%',
+                    }
+                },
+            },
+            drum: {
+                controller: {
+                    isMidi: true,
+                    ports: {
+                        input: '%%DRUM_CONTROLLER_MIDI_INPUT%%',
+                        output: '%%DRUM_CONTROLLER_MIDI_OUTPUT%%',
+                    }
+                },
+                synthesizer: {
+                    isMidi: true,
+                    ports: {
+                        output: '%%DRUM_SYNTHESIZER_MIDI_OUTPUT%%',
+                        channel: '%%DRUM_SYNTHESIZER_MIDI_CHANNEL%%',
+                    }
+                },
+            },
+            keys: {
+                controller: {
+                    isMidi: true,
+                    ports: {
+                        input: '%%KEYS_CONTROLLER_MIDI_INPUT%%',
+                        output: '%%KEYS_CONTROLLER_MIDI_OUTPUT%%',
+                    }
+                },
+                synthesizer: {
+                    isMidi: true,
+                    ports: {
+                        output: '%%KEYS_SYNTHESIZER_MIDI_OUTPUT%%',
+                        channel: '%%KEYS_SYNTHESIZER_MIDI_CHANNEL%%',
+                    }
+                },
+            },
+            lead: {
+                controller: {
+                    isMidi: true,
+                    ports: {
+                        input: '%%LEAD_CONTROLLER_MIDI_INPUT%%',
+                        output: '%%LEAD_CONTROLLER_MIDI_OUTPUT%%',
+                    }
+                },
+                synthesizer: {
+                    isMidi: true,
+                    ports: {
+                        output: '%%LEAD_SYNTHESIZER_MIDI_OUTPUT%%',
+                        channel: '%%LEAD_SYNTHESIZER_MIDI_CHANNEL%%',
+                    }
+                },
+            },
+        },
+        showSourceCode: false,
+    },
+}
 
 --------------------------------------------------------------------------------------------------------
 
@@ -220,3 +340,16 @@ Evolution of the project:
 -Broke up with all packages, dependencies, and frameworks
 -Rebuilt the project in vanilla javascript
 -Just wanted to do it
+
+--------------------------------------------------------------------------------------------------------
+
+Refactor Ideas:
+-Configs get stuff from the portions they config
+
+--------------------------------------------------------------------------------------------------------
+
+Process:
+-Page loads
+-Check URL for config
+    -If there is a config try to start everything with it
+        -

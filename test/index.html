@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Config Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Transporter Section -->
+    <div class="config-section">
+        <h2>Transporter</h2>
+        <label>
+            MIDI Enabled:
+            <input type="checkbox" name="transporter-is-midi">
+        </label>
+        <div class="port-group" id="transporter-ports">
+            <label>
+                MIDI Input Port:
+                <select name="transporter-midi-input">
+                    <option value="">Select input port</option>
+                    <option value="port1">Port 1</option>
+                    <option value="port2">Port 2</option>
+                </select>
+            </label>
+            <label>
+                MIDI Output Port:
+                <select name="transporter-midi-output">
+                    <option value="">Select output port</option>
+                    <option value="port1">Port 1</option>
+                    <option value="port2">Port 2</option>
+                </select>
+            </label>
+        </div>
+    </div>
+
+    <!-- Band Section -->
+    <div class="config-section">
+        <h2>Band</h2>
+        <label>
+            Show Chart Source:
+            <input type="checkbox" name="band-show-chart-source">
+        </label>
+
+        <!-- Instrument Sections -->
+        <div class="instrument">
+            <h3>Bass</h3>
+            <div class="part">
+                <h4>Controller</h4>
+                <label>
+                    MIDI Enabled:
+                    <input type="checkbox" name="bass-controller-is-midi">
+                </label>
+                <div class="port-group">
+                    <label>
+                        MIDI Input Port:
+                        <select name="bass-controller-midi-input">
+                            <option value="">Select input port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                    <label>
+                        MIDI Output Port:
+                        <select name="bass-controller-midi-output">
+                            <option value="">Select output port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="part">
+                <h4>Synthesizer</h4>
+                <label>
+                    MIDI Enabled:
+                    <input type="checkbox" name="bass-synthesizer-is-midi">
+                </label>
+                <div class="port-group">
+                    <label>
+                        MIDI Output Port:
+                        <select name="bass-synthesizer-midi-output">
+                            <option value="">Select output port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                    <label>
+                        MIDI Channel:
+                        <input type="number" name="bass-synthesizer-midi-channel" value="1" min="1">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drum Section -->
+        <div class="instrument">
+            <h3>Drum</h3>
+            <div class="part">
+                <h4>Controller</h4>
+                <label>
+                    MIDI Enabled:
+                    <input type="checkbox" name="drum-controller-is-midi">
+                </label>
+                <div class="port-group">
+                    <label>
+                        MIDI Input Port:
+                        <select name="drum-controller-midi-input">
+                            <option value="">Select input port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                    <label>
+                        MIDI Output Port:
+                        <select name="drum-controller-midi-output">
+                            <option value="">Select output port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="part">
+                <h4>Synthesizer</h4>
+                <label>
+                    MIDI Enabled:
+                    <input type="checkbox" name="drum-synthesizer-is-midi">
+                </label>
+                <div class="port-group">
+                    <label>
+                        MIDI Output Port:
+                        <select name="drum-synthesizer-midi-output">
+                            <option value="">Select output port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                    <label>
+                        MIDI Channel:
+                        <input type="number" name="drum-synthesizer-midi-channel" value="1" min="1">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keys Section -->
+        <div class="instrument">
+            <h3>Keys</h3>
+            <div class="part">
+                <h4>Controller</h4>
+                <label>
+                    MIDI Enabled:
+                    <input type="checkbox" name="keys-controller-is-midi">
+                </label>
+                <div class="port-group">
+                    <label>
+                        MIDI Input Port:
+                        <select name="keys-controller-midi-input">
+                            <option value="">Select input port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                    <label>
+                        MIDI Output Port:
+                        <select name="keys-controller-midi-output">
+                            <option value="">Select output port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="part">
+                <h4>Synthesizer</h4>
+                <label>
+                    MIDI Enabled:
+                    <input type="checkbox" name="keys-synthesizer-is-midi">
+                </label>
+                <div class="port-group">
+                    <label>
+                        MIDI Output Port:
+                        <select name="keys-synthesizer-midi-output">
+                            <option value="">Select output port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                    <label>
+                        MIDI Channel:
+                        <input type="number" name="keys-synthesizer-midi-channel" value="1" min="1">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lead Section -->
+        <div class="instrument">
+            <h3>Lead</h3>
+            <div class="part">
+                <h4>Controller</h4>
+                <label>
+                    MIDI Enabled:
+                    <input type="checkbox" name="lead-controller-is-midi">
+                </label>
+                <div class="port-group">
+                    <label>
+                        MIDI Input Port:
+                        <select name="lead-controller-midi-input">
+                            <option value="">Select input port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                    <label>
+                        MIDI Output Port:
+                        <select name="lead-controller-midi-output">
+                            <option value="">Select output port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="part">
+                <h4>Synthesizer</h4>
+                <label>
+                    MIDI Enabled:
+                    <input type="checkbox" name="lead-synthesizer-is-midi">
+                </label>
+                <div class="port-group">
+                    <label>
+                        MIDI Output Port:
+                        <select name="lead-synthesizer-midi-output">
+                            <option value="">Select output port</option>
+                            <option value="port1">Port 1</option>
+                            <option value="port2">Port 2</option>
+                        </select>
+                    </label>
+                    <label>
+                        MIDI Channel:
+                        <input type="number" name="lead-synthesizer-midi-channel" value="1" min="1">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <button type="button">Refresh MIDI Ports</button>
+        <label>
+            Remember Config
+            <input type="checkbox" name="remember-config">
+        </label>
+        <input type="submit" value="Submit Config">
+    </div>
+
+</body>
+
+</html>
