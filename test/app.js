@@ -1,4 +1,24 @@
 const PART_NAMES = ['bass', 'drum', 'keys', 'lead']
+const MIDI_PORTS = {
+    INPUT: [
+        'Transporter',
+        'Bass Controller',
+        'Drum Controller',
+        'Keys Controller',
+        'Lead Controller',
+    ],
+    OUTPUT: [
+        'Transporter',
+        'Bass Controller',
+        'Drum Controller',
+        'Keys Controller',
+        'Lead Controller',
+        'Bass Synthesizer',
+        'Drum Synthesizer',
+        'Keys Synthesizer',
+        'Lead Synthesizer',
+    ],
+}
 
 function dm(tag, attributes = {}, ...children) {
     const element = document.createElement(tag)
@@ -19,70 +39,64 @@ function dm(tag, attributes = {}, ...children) {
 }
 
 function makeUseMidiConfig(portion) {
-    return dm('label', {}, 'MIDI',
+    return dm('label', {}, 'Use MIDI:',
         dm('input', { type: 'checkbox', name: `${portion}-use-midi` })
     )
 }
 
-function makeDuplexConfig(portion) {
-    return dm('div', { class: 'port-group' },
-        dm('select', { name: `${portion}-input-port` },
-            dm('option', { value: 'port1' }, 'Port 1'),
-            dm('option', { value: 'port2' }, 'Port 2')
-        ),
-        dm('label', {}, ' → Here → '),
-        dm('select', { name: `${portion}-output-port` },
-            dm('option', { value: 'port1' }, 'Port 1'),
-            dm('option', { value: 'port2' }, 'Port 2')
-        )
+function makeMidiSelect(portion, isInput) {
+    const ports = isInput ? MIDI_PORTS.INPUT : MIDI_PORTS.OUTPUT
+
+    return dm('select', { name: `${portion}-${isInput ? 'input' : 'output'}-port` },
+        ...ports.map(port => dm('option', { value: port }, port))
     )
 }
 
-function makeSimplexConfig(portion) {
-    return dm('div', { class: 'port-group' },
-        dm('label', {}, 'Port: ',
-            dm('select', { name: `${portion}-output-port` },
-                dm('option', { value: 'port1' }, 'Port 1'),
-                dm('option', { value: 'port2' }, 'Port 2')
-            )
+function makeDuplexConfig(portion) {
+    return dm('label', {},
+        dm('b', {}, `${portion.split('-').at(-1).toUpperCase()} `),
+        makeUseMidiConfig(portion),
+        dm('label', {},
+            'Input: ',
+            makeMidiSelect(portion, true)
         ),
-        dm('label', {}, 'Channel: ',
-            dm('input', { type: 'number', name: `${portion}-channel`, min: '1', max: '16', value: '1' })
+        dm('label', {},
+            'Output: ',
+            makeMidiSelect(portion, false)
         )
     )
 }
 
 function makePartConfig(partName) {
+    const synthesizerPortionName = `${partName}-synthesizer`
+
     return dm('fieldset', {},
         dm('legend', {}, partName.toUpperCase()),
-        dm('div', {},
-            dm('h4', {}, 'Controller'),
-            makeUseMidiConfig(`${partName}-controller`),
-            makeDuplexConfig(`${partName}-controller`)
-        ),
+        makeDuplexConfig(`${partName}-controller`),
         dm('hr'),
-        dm('div', {},
-            dm('h4', {}, 'Synthesizer'),
-            makeUseMidiConfig(`${partName}-synthesizer`),
-            makeSimplexConfig(`${partName}-synthesizer`)
+        dm('label', {},
+            dm('b', {}, 'SYNTHESIZER '),
+            makeUseMidiConfig(synthesizerPortionName),
+            dm('label', {}, 'Output: ',
+                makeMidiSelect(synthesizerPortionName, false)
+            ),
+            dm('label', {}, 'Channel: ',
+                dm('input', { type: 'number', name: `${synthesizerPortionName}-channel`, min: '1', max: '16', value: '1' })
+            )
         )
     )
 }
 
 document.body.append(
-    dm('form', { id: 'config-form' },
-        dm('fieldset', {},
-            dm('legend', {}, 'TRANSPORTER'),
-            makeUseMidiConfig('transporter'),
+    dm('fieldset', {},
+        dm('legend', {}, 'Config'),
+        dm('label', {}, 'Show Chart Source',
+            dm('input', { type: 'checkbox', name: 'band-show-chart-source', checked: 'true' })
+        ),
+        dm('div', {},
             makeDuplexConfig('transporter')
         ),
-        dm('fieldset', {},
-            dm('legend', {}, 'PAGE'),
-            dm('label', {}, 'Show Chart Source',
-                dm('input', { type: 'checkbox', name: 'band-show-chart-source', checked: 'true' })
-            ),
-        ),
-        dm('div', { id: 'part-config-container' }, ...PART_NAMES.map(makePartConfig)),
+        dm('div', {}, ...PART_NAMES.map(makePartConfig)),
         dm('div', {},
             dm('button', { type: 'button' }, 'Refresh MIDI Ports'),
             dm('label', {}, 'Remember Config',
