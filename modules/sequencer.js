@@ -39,6 +39,7 @@
 //     paginator.start()
 // }
 
+import Paginator from './paginator.js'
 import Transporter from './transporter.js'
 import Band from './band.js'
 
@@ -47,40 +48,44 @@ export default class Sequencer {
     transporter = new Transporter()
     band = new Band()
 
-    tryConfig(config) {
-        // Check if there even is a config
-        if (!config) {
-            throw new Error('config is required')
-        }
+    constructor() { }
 
-        // We use a problems variable to collect all the problems because we want
-        // to be able to evaluate transporter and band even if the other one fails
-        const problems = []
+    async start() { }
 
-        const { transporter, band } = config
+    // tryConfig(config) {
+    //     // Check if there even is a config
+    //     if (!config) {
+    //         throw new Error('config is required')
+    //     }
 
-        if (!transporter) {
-            problems.push('transporter is required')
-        } else {
-            try {
-                this.transporter.tryConfig(transporter)
-            } catch (e) {
-                problems.push(e.message)
-            }
-        }
+    //     // We use a problems variable to collect all the problems because we want
+    //     // to be able to evaluate transporter and band even if the other one fails
+    //     const problems = []
 
-        if (!band) {
-            problems.push('band is required')
-        } else {
-            try {
-                this.band.tryConfig(band)
-            } catch (e) {
-                problems.push(e.message)
-            }
-        }
+    //     const { transporter, band } = config
 
-        if (problems.length > 0) {
-            throw new Error(problems.join('\n'))
-        }
-    }
+    //     if (!transporter) {
+    //         problems.push('transporter is required')
+    //     } else {
+    //         try {
+    //             this.transporter.tryConfig(transporter)
+    //         } catch (e) {
+    //             problems.push(e.message)
+    //         }
+    //     }
+
+    //     if (!band) {
+    //         problems.push('band is required')
+    //     } else {
+    //         try {
+    //             this.band.tryConfig(band)
+    //         } catch (e) {
+    //             problems.push(e.message)
+    //         }
+    //     }
+
+    //     if (problems.length > 0) {
+    //         throw new Error(problems.join('\n'))
+    //     }
+    // }
 }

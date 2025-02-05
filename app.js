@@ -1,8 +1,10 @@
-import { getConfig } from './modules/config.js'
-import { makeSequencer } from './modules/sequencer.js'
+import Sequencer from './modules/sequencer.js'
 
-// Get the config and make the sequencer
-const config = await getConfig()
-console.log('config', config)
-const sequencer = makeSequencer(config)
-console.log('sequencer', sequencer)
+const sequencer = new Sequencer()
+
+try {
+    await sequencer.start()
+    console.log('sequencer', sequencer)
+} catch (error) {
+    console.error(error)
+}
