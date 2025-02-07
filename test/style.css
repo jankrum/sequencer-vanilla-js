@@ -24,24 +24,24 @@
 
 @font-face {
     font-family: 'Atkinson Hyperlegible';
-    src: url('/fonts/atkinson-hyperlegible/Atkinson-Hyperlegible-Regular.ttf') format('truetype');
+    src: url('/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Regular.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'Atkinson Hyperlegible Bold';
-    src: url('/fonts/atkinson-hyperlegible/Atkinson-Hyperlegible-Bold.ttf') format('truetype');
+    src: url('/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Bold.ttf') format('truetype');
     font-weight: bold;
 }
 
 @font-face {
     font-family: 'Atkinson Hyperlegible Italic';
-    src: url('/fonts/atkinson-hyperlegible/Atkinson-Hyperlegible-Italic.ttf') format('truetype');
+    src: url('/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Italic.ttf') format('truetype');
     font-style: italic;
 }
 
 @font-face {
     font-family: 'Atkinson Hyperlegible Bold Italic';
-    src: url('/fonts/atkinson-hyperlegible/Atkinson-Hyperlegible-BoldItalic.ttf') format('truetype');
+    src: url('/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-BoldItalic.ttf') format('truetype');
     font-weight: bold;
     font-style: italic;
 }

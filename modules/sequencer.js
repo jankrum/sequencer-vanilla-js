@@ -42,6 +42,7 @@
 import Paginator from './paginator.js'
 import Transporter from './transporter.js'
 import Band from './band.js'
+import { dm } from './utility.js'
 
 export default class Sequencer {
     static #configUrlKey = 'config'
@@ -49,13 +50,15 @@ export default class Sequencer {
     paginator = new Paginator()
     transporter = new Transporter()
     band = new Band()
+    showChartSource = false
 
     constructor() { }
 
     async start() {
-        this.canStartFromUrl() || await this.startFromForm()
+        this.canStartFromUrl() || await this.startFromUser()
     }
 
+    // Returns a bool indicating if the sequencer was able to start from the URL
     canStartFromUrl() {
         // Try to use the config from the URL
         const urlParams = new URLSearchParams(window.location.search)
@@ -87,44 +90,98 @@ export default class Sequencer {
         return false
     }
 
-    async startFromForm() {
+    tryConfig(config) {
+        // Check if there even is a config
+        if (!config) {
+            throw new Error('"config" is required')
+        }
 
+        // We use a problems variable to collect all the problems because we want
+        // to be able to evaluate transporter and band even if the other one fails
+        const problems = []
+
+        const { showChartSource, transporter, band } = config
+
+        if (showChartSource === undefined) {
+            problems.push('"showChartSource" is required')
+        } else if (typeof showChartSource !== 'boolean') {
+            problems.push('"showChartSource" must be a boolean')
+        } else {
+            // Set the showChartSource property so that it may be used in the startFromForm method
+            this.showChartSource = showChartSource
+        }
+
+        if (transporter === undefined) {
+            problems.push('"transporter" is required')
+        } else if (typeof transporter !== 'object') {
+            problems.push('"transporter" must be an object')
+        } else {
+            try {
+                this.transporter.tryConfig(transporter)
+            } catch (e) {
+                problems.push(e.message)
+            }
+        }
+
+        if (band === undefined) {
+            problems.push('"band" is required')
+        } else if (typeof band !== 'object') {
+            problems.push('"band" must be an object')
+        } else {
+            try {
+                this.band.tryConfig(band)
+            } catch (e) {
+                problems.push(e.message)
+            }
+        }
+
+        if (problems.length > 0) {
+            throw new Error(problems.join('\n'))
+        }
     }
 
-    // tryConfig(config) {
-    //     // Check if there even is a config
-    //     if (!config) {
-    //         throw new Error('config is required')
-    //     }
+    startFromUser() {
+        const form = this.getConfigElement()
+        return new Promise((resolve, reject) => {
+            form.addEventListener('submit', event => {
+                event.preventDefault()
 
-    //     // We use a problems variable to collect all the problems because we want
-    //     // to be able to evaluate transporter and band even if the other one fails
-    //     const problems = []
+                const config = this.getConfigFromForm(form)
+                this.tryConfig(config)
 
-    //     const { transporter, band } = config
+                resolve()
+            })
+        })
+    }
 
-    //     if (!transporter) {
-    //         problems.push('transporter is required')
-    //     } else {
-    //         try {
-    //             this.transporter.tryConfig(transporter)
-    //         } catch (e) {
-    //             problems.push(e.message)
-    //         }
-    //     }
+    getConfigElement() {
+        // Show Chart Source
+        const showChartSourceCheckbox = dm('input', { type: 'checkbox', name: 'show-chart-source', checked: this.showChartSource })
+        const showChartSourceLabel = dm('label', {}, 'Show Chart Source', showChartSourceCheckbox)
 
-    //     if (!band) {
-    //         problems.push('band is required')
-    //     } else {
-    //         try {
-    //             this.band.tryConfig(band)
-    //         } catch (e) {
-    //             problems.push(e.message)
-    //         }
-    //     }
+        const hr = dm('hr', { class: 'wide' })
 
-    //     if (problems.length > 0) {
-    //         throw new Error(problems.join('\n'))
-    //     }
-    // }
+        // Transporter and Band
+        const transporterConfig = this.transporter.getConfigElement()
+        const bandConfigs = this.band.getConfigElements()
+
+        // Miscellaneous Div
+        const refreshMidiButton = dm('button', {}, 'Refresh MIDI Ports')
+        const rememberConfigCheckbox = dm('input', { type: 'checkbox', name: 'remember-config', checked: true })
+        const rememberConfigLabel = dm('label', {}, 'Remember Config', rememberConfigCheckbox)
+        const submitButton = dm('button', { type: 'submit' }, 'Submit')
+        const miscellaneousDiv = dm('div', { class: 'wide' }, refreshMidiButton, rememberConfigLabel, submitButton)
+
+        const configForm = dm('form', { id: 'config' },
+            showChartSourceLabel,
+            hr,
+            transporterConfig,
+            ...bandConfigs,
+            miscellaneousDiv
+        )
+
+        document.body.append(configForm)
+
+        return configForm
+    }
 }

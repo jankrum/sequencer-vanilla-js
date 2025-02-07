@@ -90,7 +90,7 @@ function makePartConfig(partName) {
 }
 
 document.body.append(
-    dm('div', { id: 'config' },
+    dm('form', { id: 'config' },
         dm('label', {}, 'Show Chart Source',
             dm('input', { type: 'checkbox', name: 'band-show-chart-source', checked: 'true' })
         ),

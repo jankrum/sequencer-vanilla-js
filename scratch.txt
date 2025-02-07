@@ -185,7 +185,7 @@ Misc:
     transporter: {
         isMidi: false,
     },
-    parts: {
+    band: {
         bass: {
             controller: {
                 isMidi: false,
@@ -230,7 +230,7 @@ Misc:
             output: '%TRANSPORTER_%MIDI_OUTPUT%%',
         },
     },
-    parts: {
+    band: {
         bass: {
             controller: {
                 isMidi: true,
