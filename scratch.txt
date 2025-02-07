@@ -181,124 +181,120 @@ Misc:
     -Checkbox to store the config in the URL
 
 {
+    showSourceCode: false,
     transporter: {
         isMidi: false,
     },
-    band: {
-        parts: {
-            bass: {
-                controller: {
-                    isMidi: false,
-                },
-                synthesizer: {
-                    isMidi: false,
-                },
+    parts: {
+        bass: {
+            controller: {
+                isMidi: false,
             },
-            drum: {
-                controller: {
-                    isMidi: false,
-                },
-                synthesizer: {
-                    isMidi: false,
-                },
+            synthesizer: {
+                isMidi: false,
             },
-            keys: {
-                controller: {
-                    isMidi: false,
-                },
-                synthesizer: {
-                    isMidi: false,
-                },
+        },
+        drum: {
+            controller: {
+                isMidi: false,
             },
-            lead: {
-                controller: {
-                    isMidi: false,
-                },
-                synthesizer: {
-                    isMidi: false,
-                },
+            synthesizer: {
+                isMidi: false,
             },
-        showSourceCode: false,
+        },
+        keys: {
+            controller: {
+                isMidi: false,
+            },
+            synthesizer: {
+                isMidi: false,
+            },
+        },
+        lead: {
+            controller: {
+                isMidi: false,
+            },
+            synthesizer: {
+                isMidi: false,
+            },
         },
     },
 }
 
 {
+    showSourceCode: true,
     transporter: {
         isMidi: true,
         ports: {
             input: '%%TRANSPORTER_MIDI_INPUT%%',
             output: '%TRANSPORTER_%MIDI_OUTPUT%%',
-        }
+        },
     },
-    band: {
-        parts: {
-            bass: {
-                controller: {
-                    isMidi: true,
-                    ports: {
-                        input: '%%BASS_CONTROLLER_MIDI_INPUT%%',
-                        output: '%%BASS_CONTROLLER_MIDI_OUTPUT%%',
-                    }
-                },
-                synthesizer: {
-                    isMidi: true,
-                    ports: {
-                        output: '%%BASS_SYNTHESIZER_MIDI_OUTPUT%%',
-                        channel: '%%BASS_SYNTHESIZER_MIDI_CHANNEL%%',
-                    }
+    parts: {
+        bass: {
+            controller: {
+                isMidi: true,
+                ports: {
+                    input: '%%BASS_CONTROLLER_MIDI_INPUT%%',
+                    output: '%%BASS_CONTROLLER_MIDI_OUTPUT%%',
                 },
             },
-            drum: {
-                controller: {
-                    isMidi: true,
-                    ports: {
-                        input: '%%DRUM_CONTROLLER_MIDI_INPUT%%',
-                        output: '%%DRUM_CONTROLLER_MIDI_OUTPUT%%',
-                    }
-                },
-                synthesizer: {
-                    isMidi: true,
-                    ports: {
-                        output: '%%DRUM_SYNTHESIZER_MIDI_OUTPUT%%',
-                        channel: '%%DRUM_SYNTHESIZER_MIDI_CHANNEL%%',
-                    }
-                },
-            },
-            keys: {
-                controller: {
-                    isMidi: true,
-                    ports: {
-                        input: '%%KEYS_CONTROLLER_MIDI_INPUT%%',
-                        output: '%%KEYS_CONTROLLER_MIDI_OUTPUT%%',
-                    }
-                },
-                synthesizer: {
-                    isMidi: true,
-                    ports: {
-                        output: '%%KEYS_SYNTHESIZER_MIDI_OUTPUT%%',
-                        channel: '%%KEYS_SYNTHESIZER_MIDI_CHANNEL%%',
-                    }
-                },
-            },
-            lead: {
-                controller: {
-                    isMidi: true,
-                    ports: {
-                        input: '%%LEAD_CONTROLLER_MIDI_INPUT%%',
-                        output: '%%LEAD_CONTROLLER_MIDI_OUTPUT%%',
-                    }
-                },
-                synthesizer: {
-                    isMidi: true,
-                    ports: {
-                        output: '%%LEAD_SYNTHESIZER_MIDI_OUTPUT%%',
-                        channel: '%%LEAD_SYNTHESIZER_MIDI_CHANNEL%%',
-                    }
+            synthesizer: {
+                isMidi: true,
+                ports: {
+                    output: '%%BASS_SYNTHESIZER_MIDI_OUTPUT%%',
+                    channel: '%%BASS_SYNTHESIZER_MIDI_CHANNEL%%',
                 },
             },
         },
-        showSourceCode: false,
+        drum: {
+            controller: {
+                isMidi: true,
+                ports: {
+                    input: '%%DRUM_CONTROLLER_MIDI_INPUT%%',
+                    output: '%%DRUM_CONTROLLER_MIDI_OUTPUT%%',
+                },
+            },
+            synthesizer: {
+                isMidi: true,
+                ports: {
+                    output: '%%DRUM_SYNTHESIZER_MIDI_OUTPUT%%',
+                    channel: '%%DRUM_SYNTHESIZER_MIDI_CHANNEL%%',
+                },
+            },
+        },
+        keys: {
+            controller: {
+                isMidi: true,
+                ports: {
+                    input: '%%KEYS_CONTROLLER_MIDI_INPUT%%',
+                    output: '%%KEYS_CONTROLLER_MIDI_OUTPUT%%',
+                },
+            },
+            synthesizer: {
+                isMidi: true,
+                ports: {
+                    output: '%%KEYS_SYNTHESIZER_MIDI_OUTPUT%%',
+                    channel: '%%KEYS_SYNTHESIZER_MIDI_CHANNEL%%',
+                },
+            },
+        },
+        lead: {
+            controller: {
+                isMidi: true,
+                ports: {
+                    input: '%%LEAD_CONTROLLER_MIDI_INPUT%%',
+                    output: '%%LEAD_CONTROLLER_MIDI_OUTPUT%%',
+                },
+            },
+            synthesizer: {
+                isMidi: true,
+                ports: {
+                    output: '%%LEAD_SYNTHESIZER_MIDI_OUTPUT%%',
+                    channel: '%%LEAD_SYNTHESIZER_MIDI_CHANNEL%%',
+                },
+            },
+        },
     },
 }
 

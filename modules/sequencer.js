@@ -44,13 +44,52 @@ import Transporter from './transporter.js'
 import Band from './band.js'
 
 export default class Sequencer {
+    static #configUrlKey = 'config'
+
     paginator = new Paginator()
     transporter = new Transporter()
     band = new Band()
 
     constructor() { }
 
-    async start() { }
+    async start() {
+        this.canStartFromUrl() || await this.startFromForm()
+    }
+
+    canStartFromUrl() {
+        // Try to use the config from the URL
+        const urlParams = new URLSearchParams(window.location.search)
+        const encodedConfig = urlParams.get(Sequencer.#configUrlKey)
+
+        try {
+            if (!encodedConfig) {
+                throw new Error('No configuration found in URL')
+            }
+
+            const base64String = decodeURIComponent(encodedConfig)
+            const jsonString = atob(base64String)
+            const config = JSON.parse(jsonString)
+
+            // This will throw an error if the config is invalid
+            this.tryConfig(config)
+
+            // Yes, we can start from the URL
+            return true
+        } catch (error) {
+            console.log(error)
+
+            urlParams.delete(Sequencer.#configUrlKey)
+            const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`
+            window.history.replaceState(null, '', newUrl)
+        }
+
+        // No, we cannot start from the URL
+        return false
+    }
+
+    async startFromForm() {
+
+    }
 
     // tryConfig(config) {
     //     // Check if there even is a config

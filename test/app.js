@@ -94,6 +94,7 @@ document.body.append(
         dm('label', {}, 'Show Chart Source',
             dm('input', { type: 'checkbox', name: 'band-show-chart-source', checked: 'true' })
         ),
+        dm('hr', { class: 'wide' }),
         makeDuplexConfig('transporter'),
         ...PART_NAMES.map(makePartConfig),
         dm('div', { class: 'wide' },
