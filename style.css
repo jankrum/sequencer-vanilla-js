@@ -1,3 +1,35 @@
+/*#region FONTS*/
+@font-face {
+    font-family: 'hd44780';
+    src: url('/fonts/hd44780.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible Bold';
+    src: url('/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Bold.ttf') format('truetype');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible Italic';
+    src: url('/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-Italic.ttf') format('truetype');
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible Bold Italic';
+    src: url('/fonts/atkinson-hyperlegible/AtkinsonHyperlegible-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+/*#endregion*/
+
 :root {
     --red: #b23535;
     --green: #38ad5f;
@@ -26,20 +58,56 @@
 
 body {
     min-height: 100vh;
-    font-family: Arial, sans-serif;
+    font-family: 'Atkinson Hyperlegible', Tahoma, sans-serif;
     color: var(--text-color);
     background-color: var(--background-color);
     border-color: var(--text-color);
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* -------------------------------------------------------------------------- */
 /*                                   Config                                   */
 /* -------------------------------------------------------------------------- */
 
-#config-form {
+label {
+    user-select: none;
+}
+
+.wide {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.midi-config {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#config {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid;
+    border-radius: 1rem;
+    width: fit-content;
+    height: fit-content;
+    margin: 1rem;
+    padding: 1rem;
+    gap: 1rem;
+}
+
+/* #config-form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -79,13 +147,13 @@ button {
 button:hover {
     background-color: var(--text-color);
     color: var(--background-color);
-}
+} */
 
-/* -------------------------------------------------------------------------- */
+--------------------------------------------------------------------------
 /*                                 Transporter                                */
 /* -------------------------------------------------------------------------- */
 
-.transporter-button {
+/* .transporter-button {
     width: 2em;
     height: 2em;
 
@@ -93,9 +161,9 @@ button:hover {
     border-radius: 50%;
     font-size: 2.5rem;
 
-    padding: 1rem;
-    /* align-items: center; */
-    margin: 0 0.5rem 2rem 0.5rem;
+    padding: 1rem; */
+/* align-items: center; */
+/* margin: 0 0.5rem 2rem 0.5rem;
 
     cursor: pointer;
 
@@ -120,16 +188,16 @@ button:hover {
     text-align: center;
 
     border-bottom: 1px solid var(--text-color);
-}
+} */
 
 /* -------------------------------------------------------------------------- */
 /*                               Part Container                               */
 /* -------------------------------------------------------------------------- */
 
-.lcd {
-    padding: 0.5em 1em;
-    /* border: 0px solid; */
-    border-radius: 5px;
+/* .lcd {
+    padding: 0.5em 1em; */
+/* border: 0px solid; */
+/* border-radius: 5px;
 
     width: 16ch;
     min-height: 4em;
@@ -225,7 +293,7 @@ input[type="range"] {
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: start;
-}
+} */
 
 /* -------------------------------------------------------------------------- */
 /*                                    Misc                                    */

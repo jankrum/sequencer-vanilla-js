@@ -344,8 +344,12 @@ Refactor Ideas:
 
 --------------------------------------------------------------------------------------------------------
 
-Process:
--Page loads
--Check URL for config
-    -If there is a config try to start everything with it
-        -
+Every object in has the following:
+-A way to test its portion of the config
+    -This either passes and returns null or fails and throws an error
+    -Any values that are valid are stored in the object
+-A way to get the DOM element(s) for the portion of the config
+    -The DOM element created is returned
+-A way to get the config object for the portion of the config
+    -The config object is returned
+    -This should not be able to fail, as any invalid values should have been caught by the test

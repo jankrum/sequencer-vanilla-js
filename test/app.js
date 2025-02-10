@@ -38,10 +38,10 @@ function dm(tag, attributes = {}, ...children) {
     return element
 }
 
-function makeMidiSelect(portion, isInput) {
+function makeMidiSelect(isInput) {
     const ports = isInput ? MIDI_PORTS.INPUT : MIDI_PORTS.OUTPUT
 
-    return dm('select', { name: `${portion}-${isInput ? 'input' : 'output'}-port` },
+    return dm('select', {},
         ...ports.map(port => dm('option', { value: port }, port))
     )
 }
@@ -50,24 +50,22 @@ function makeDuplexConfig(portion) {
     return dm('div', { class: 'midi-config' },
         dm('label', { class: 'wide' },
             dm('b', {}, portion.split('-').at(-1).toUpperCase()),
-            dm('input', { type: 'checkbox', name: `${portion}-use-midi` }),
+            dm('input', { type: 'checkbox' }),
         ),
         dm('div', { class: 'wide' },
             dm('label', {},
                 'Input: ',
-                makeMidiSelect(portion, true)
+                makeMidiSelect(true)
             ),
             dm('label', {},
                 'Output: ',
-                makeMidiSelect(portion, false)
+                makeMidiSelect(false)
             )
         )
     )
 }
 
 function makePartConfig(partName) {
-    const synthesizerPortionName = `${partName}-synthesizer`
-
     return dm('fieldset', {},
         dm('legend', {}, partName.toUpperCase()),
         makeDuplexConfig(`${partName}-controller`),
@@ -75,14 +73,14 @@ function makePartConfig(partName) {
         dm('div', { class: 'midi-config' },
             dm('label', { class: 'wide' },
                 dm('b', {}, 'SYNTHESIZER'),
-                dm('input', { type: 'checkbox', name: `${synthesizerPortionName}-use-midi` }),
+                dm('input', { type: 'checkbox' }),
             ),
             dm('div', { class: 'wide' },
                 dm('label', {}, 'Output: ',
-                    makeMidiSelect(synthesizerPortionName, false)
+                    makeMidiSelect(false)
                 ),
                 dm('label', {}, 'Channel: ',
-                    dm('input', { type: 'number', name: `${synthesizerPortionName}-channel`, min: '1', max: '16', value: '1' })
+                    dm('input', { type: 'number', min: '1', max: '16', value: '1' })
                 )
             )
         )

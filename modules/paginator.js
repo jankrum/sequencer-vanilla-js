@@ -1,3 +1,3 @@
-import setlist from '/chart/setlist.js'
+import setlist from '/charts/setlist.js'
 
 export default class Paginator { }

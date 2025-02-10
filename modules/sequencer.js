@@ -41,20 +41,24 @@
 
 import Paginator from './paginator.js'
 import Transporter from './transporter.js'
-import Band from './band.js'
+// import Band from './band.js'
 import { dm } from './utility.js'
 
 export default class Sequencer {
+    // Class variables
     static #configUrlKey = 'config'
 
-    paginator = new Paginator()
+    // Child objects
+    // paginator = new Paginator()
     transporter = new Transporter()
-    band = new Band()
+    // band = new Band()
+
+    // Properties
     showChartSource = false
 
-    constructor() { }
-
+    // Starts the sequencer
     async start() {
+        // Try to start from the URL, otherwise wait for the user to submit a form
         this.canStartFromUrl() || await this.startFromUser()
     }
 
@@ -123,31 +127,41 @@ export default class Sequencer {
             }
         }
 
-        if (band === undefined) {
-            problems.push('"band" is required')
-        } else if (typeof band !== 'object') {
-            problems.push('"band" must be an object')
-        } else {
-            try {
-                this.band.tryConfig(band)
-            } catch (e) {
-                problems.push(e.message)
-            }
-        }
+        // if (band === undefined) {
+        //     problems.push('"band" is required')
+        // } else if (typeof band !== 'object') {
+        //     problems.push('"band" must be an object')
+        // } else {
+        //     try {
+        //         this.band.tryConfig(band)
+        //     } catch (e) {
+        //         problems.push(e.message)
+        //     }
+        // }
 
         if (problems.length > 0) {
             throw new Error(problems.join('\n'))
         }
     }
 
+    // Returns a promise that resolves when the user has successfully submitted the form
     startFromUser() {
+        // Create the form
         const form = this.getConfigElement()
-        return new Promise((resolve, reject) => {
+        document.body.append(form)
+
+        // Return a promise that resolves when the form is submitted
+        return new Promise((resolve) => {
             form.addEventListener('submit', event => {
+                // Prevent the form from submitting
                 event.preventDefault()
 
-                const config = this.getConfigFromForm(form)
+                // Get the config from the form and try it
+                const config = form.getConfigValues()
                 this.tryConfig(config)
+
+                // If we reach this point, the config is valid and we can wrap it up
+                document.body.removeChild(form)
 
                 resolve()
             })
@@ -156,14 +170,15 @@ export default class Sequencer {
 
     getConfigElement() {
         // Show Chart Source
-        const showChartSourceCheckbox = dm('input', { type: 'checkbox', name: 'show-chart-source', checked: this.showChartSource })
+        const showChartSourceCheckbox = dm('input', { type: 'checkbox', name: 'show-chart-source' })
+        showChartSourceCheckbox.checked = this.showChartSource
         const showChartSourceLabel = dm('label', {}, 'Show Chart Source', showChartSourceCheckbox)
 
         const hr = dm('hr', { class: 'wide' })
 
         // Transporter and Band
         const transporterConfig = this.transporter.getConfigElement()
-        const bandConfigs = this.band.getConfigElements()
+        // const bandConfigs = this.band.getConfigElements()  // An array of divs
 
         // Miscellaneous Div
         const refreshMidiButton = dm('button', {}, 'Refresh MIDI Ports')
@@ -172,16 +187,22 @@ export default class Sequencer {
         const submitButton = dm('button', { type: 'submit' }, 'Submit')
         const miscellaneousDiv = dm('div', { class: 'wide' }, refreshMidiButton, rememberConfigLabel, submitButton)
 
+        // Config Form
         const configForm = dm('form', { id: 'config' },
             showChartSourceLabel,
             hr,
             transporterConfig,
-            ...bandConfigs,
+            // ...bandConfigs,
             miscellaneousDiv
         )
 
-        document.body.append(configForm)
+        // A function that returns the config
+        const getConfigValues = () => ({
+            showChartSource: showChartSourceCheckbox.checked,
+            transporter: this.transporter.getConfigValues(),
+            // band: this.band.getConfigValues()
+        })
 
-        return configForm
+        return Object.assign(configForm, { getConfigValues })
     }
 }
