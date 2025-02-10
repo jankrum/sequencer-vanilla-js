@@ -1,45 +1,4 @@
-// import { makeEnum, dm, midiAccess } from './utility.js'
-// import Transporter from './transporter.js'
-// import Controller from './controller.js'
-// import Synthesizer from './synthesizer.js'
-
-// export const PARTS = ['bass', 'drum', 'keys', 'lead']
-// export const PARTS_ENUM = makeEnum(PARTS)
-
-// class Paginator { }
-
-// class Part { }
-
-// class Band { }
-
-// function appendToBodyIfNotNull(div) {
-//     if (div) { document.body.append(div) }
-// }
-
-// export function makeSequencer(config) {
-//     // Create the transporter, paginator, and band
-//     const paginator = new Paginator()
-//     const transporter = new Transporter(config.transporter)
-//     const band = new Band(config.parts)
-
-//     // Connect the paginator, transporter, and band
-//     paginator.connect(transporter, band)
-//     transporter.connect(paginator, band)
-//     band.connect(transporter)
-
-//     // Render the transporter and band
-//     const transporterDiv = transporter.render()
-//     const bandDiv = band.render()
-
-//     // Append the transporter and band to the body
-//     appendToBodyIfNotNull(transporterDiv)
-//     appendToBodyIfNotNull(bandDiv)
-
-//     // Start the paginator
-//     paginator.start()
-// }
-
-import Paginator from './paginator.js'
+// import Paginator from './paginator.js'
 import Transporter from './transporter.js'
 import Band from './band.js'
 import { dm } from './utility.js'
@@ -83,7 +42,7 @@ export default class Sequencer {
             // Yes, we can start from the URL
             return true
         } catch (error) {
-            console.log(error)
+            console.error(error)
 
             urlParams.delete(Sequencer.#configUrlKey)
             const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`
@@ -146,29 +105,6 @@ export default class Sequencer {
 
     // Returns a promise that resolves when the user has successfully submitted the form
     startFromUser() {
-        // Create the form
-        const form = this.getConfigElement()
-        document.body.append(form)
-
-        // Return a promise that resolves when the form is submitted
-        return new Promise((resolve) => {
-            form.addEventListener('submit', event => {
-                // Prevent the form from submitting
-                event.preventDefault()
-
-                // Get the config from the form and try it
-                const config = form.getConfigValues()
-                this.tryConfig(config)
-
-                // If we reach this point, the config is valid and we can wrap it up
-                document.body.removeChild(form)
-
-                resolve()
-            })
-        })
-    }
-
-    getConfigElement() {
         // Show Chart Source
         const showChartSourceCheckbox = dm('input', { type: 'checkbox', name: 'show-chart-source' })
         showChartSourceCheckbox.checked = this.showChartSource
@@ -203,6 +139,23 @@ export default class Sequencer {
             band: this.band.getConfigValues()
         })
 
-        return Object.assign(configForm, { getConfigValues })
+        document.body.append(configForm)
+
+        // Return a promise that resolves when the form is submitted
+        return new Promise((resolve) => {
+            configForm.addEventListener('submit', event => {
+                // Prevent the form from submitting
+                event.preventDefault()
+
+                // Get the config from the form and try it
+                const config = getConfigValues()
+                this.tryConfig(config)
+
+                // If we reach this point, the config is valid and we can wrap it up
+                document.body.removeChild(configForm)
+
+                resolve()
+            })
+        })
     }
 }
