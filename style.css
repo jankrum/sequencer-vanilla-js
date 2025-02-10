@@ -107,6 +107,11 @@ label {
     gap: 1rem;
 }
 
+select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* #config-form {
     display: flex;
     flex-direction: column;

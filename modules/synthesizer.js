@@ -1,12 +1,11 @@
-// import { makeEnum } from './utility.js'
+import { SimplexMidi } from './midi-utilities.js'
 
-// const SYNTHESIZER_TYPES = ['DOM', 'MIDI']
-// export const SYNTHESIZER_TYPE_ENUM = makeEnum(SYNTHESIZER_TYPES)
+export default class Synthesizer extends SimplexMidi {
+    constructor() {
+        super()
+    }
 
-export default class Synthesizer {
-    static getProblems(config) { }
-
-    static makeConfigElements() { }
-
-    constructor() { }
+    getConfigElement() {
+        return super.getConfigElement('SYNTHESIZER')
+    }
 }

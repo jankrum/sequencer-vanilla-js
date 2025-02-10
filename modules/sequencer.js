@@ -41,7 +41,7 @@
 
 import Paginator from './paginator.js'
 import Transporter from './transporter.js'
-// import Band from './band.js'
+import Band from './band.js'
 import { dm } from './utility.js'
 
 export default class Sequencer {
@@ -51,7 +51,7 @@ export default class Sequencer {
     // Child objects
     // paginator = new Paginator()
     transporter = new Transporter()
-    // band = new Band()
+    band = new Band()
 
     // Properties
     showChartSource = false
@@ -127,17 +127,17 @@ export default class Sequencer {
             }
         }
 
-        // if (band === undefined) {
-        //     problems.push('"band" is required')
-        // } else if (typeof band !== 'object') {
-        //     problems.push('"band" must be an object')
-        // } else {
-        //     try {
-        //         this.band.tryConfig(band)
-        //     } catch (e) {
-        //         problems.push(e.message)
-        //     }
-        // }
+        if (band === undefined) {
+            problems.push('"band" is required')
+        } else if (typeof band !== 'object') {
+            problems.push('"band" must be an object')
+        } else {
+            try {
+                this.band.tryConfig(band)
+            } catch (e) {
+                problems.push(e.message)
+            }
+        }
 
         if (problems.length > 0) {
             throw new Error(problems.join('\n'))
@@ -178,7 +178,7 @@ export default class Sequencer {
 
         // Transporter and Band
         const transporterConfig = this.transporter.getConfigElement()
-        // const bandConfigs = this.band.getConfigElements()  // An array of divs
+        const bandConfigs = this.band.getConfigElements()  // An array of divs
 
         // Miscellaneous Div
         const refreshMidiButton = dm('button', {}, 'Refresh MIDI Ports')
@@ -192,7 +192,7 @@ export default class Sequencer {
             showChartSourceLabel,
             hr,
             transporterConfig,
-            // ...bandConfigs,
+            ...bandConfigs,
             miscellaneousDiv
         )
 
@@ -200,7 +200,7 @@ export default class Sequencer {
         const getConfigValues = () => ({
             showChartSource: showChartSourceCheckbox.checked,
             transporter: this.transporter.getConfigValues(),
-            // band: this.band.getConfigValues()
+            band: this.band.getConfigValues()
         })
 
         return Object.assign(configForm, { getConfigValues })

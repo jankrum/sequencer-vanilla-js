@@ -6,6 +6,6 @@ export default class Transporter extends DuplexMidi {
     }
 
     getConfigElement() {
-        return super.getConfigElement('transporter')
+        return super.getConfigElement('TRANSPORTER')
     }
 }

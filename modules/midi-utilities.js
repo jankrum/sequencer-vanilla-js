@@ -40,7 +40,7 @@ class MidiCheckbox {
         })
 
         return dm('label', { class: 'wide' },
-            dm('b', {}, name.split('-').at(-1).toUpperCase()),
+            dm('b', {}, name),
             checkbox
         )
     }
@@ -71,8 +71,8 @@ class MidiPort {
 
 class InputMidiPort {
     // Class variables
-    static blankName = '%%NONE%%'
-    static ports = hasMidiAccess ? Array.from(midiAccess.inputs.values()) : []
+    static blankName = 'No Devices Found'
+    static ports = hasMidiAccess ? Array.from(midiAccess.inputs.values()) : [{ name: InputMidiPort.blankName }]
 
     // Properties
     portName = InputMidiPort.blankName
@@ -106,6 +106,8 @@ class InputMidiPort {
             ...InputMidiPort.ports.map(port => dm('option', { value: port.name, selected: port.name === this.portName }, port.name))
         )
 
+        select.disabled = !hasMidiAccess
+
         const updatePort = () => {
             this.portName = select.value ?? InputMidiPort.blankName
             this.port = InputMidiPort.ports.find(port => port.name === this.portName) ?? null
@@ -128,8 +130,8 @@ class InputMidiPort {
 
 class OutputMidiPort {
     // Class variables
-    static blankName = '%%NONE%%'
-    static ports = hasMidiAccess ? Array.from(midiAccess.outputs.values()) : []
+    static blankName = 'No Devices Found'
+    static ports = hasMidiAccess ? Array.from(midiAccess.outputs.values()) : [{ name: OutputMidiPort.blankName }]
 
     // Properties
     portName = OutputMidiPort.blankName
@@ -162,6 +164,8 @@ class OutputMidiPort {
         const select = dm('select', {},
             ...OutputMidiPort.ports.map(port => dm('option', { value: port.name, selected: port.name === this.portName }, port.name))
         )
+
+        select.disabled = !hasMidiAccess
 
         const updatePort = () => {
             this.portName = select.value ?? OutputMidiPort.blankName
@@ -228,6 +232,68 @@ export class SimplexMidi {
     midiCheckbox = new MidiCheckbox()
     outputMidiPort = new OutputMidiPort()
     outputMidiChannel = new OutputMidiChannel()
+
+    tryConfig(config) {
+        if (!config) {
+            throw new Error('simplexMidi config is required')
+        }
+
+        if (typeof config !== 'object') {
+            throw new Error('simplexMidi config must be an object')
+        }
+
+        const { isMidi, output } = config
+
+        if (isMidi === undefined) {
+            throw new Error('isMidi is required')
+        }
+
+        if (typeof isMidi !== 'boolean') {
+            throw new Error('isMidi must be a boolean')
+        }
+
+        this.midiCheckbox.tryConfig(isMidi)
+
+        const problems = []
+
+        if (isMidi) {
+            try {
+                this.outputMidiPort.tryConfig(output.port)
+            } catch (error) {
+                problems.push(error.message)
+            }
+
+            try {
+                this.outputMidiChannel.tryConfig(output.channel)
+            } catch (error) {
+                problems.push(error.message)
+            }
+        }
+
+        if (problems.length > 0) {
+            throw new Error(problems.join('\n'))
+        }
+    }
+
+    getConfigElement(name) {
+        return dm('div', { class: 'midi-config' },
+            this.midiCheckbox.getConfigElement(name),
+            dm('div', { class: 'wide' },
+                this.outputMidiPort.getConfigElement(),
+                this.outputMidiChannel.getConfigElement()
+            )
+        )
+    }
+
+    getConfigValues() {
+        return {
+            isMidi: this.midiCheckbox.getConfigValues(),
+            output: {
+                port: this.outputMidiPort.getConfigValues(),
+                channel: this.outputMidiChannel.getConfigValues()
+            }
+        }
+    }
 }
 
 // An object that represents a duplex midi connection that communicates
@@ -243,20 +309,19 @@ export class DuplexMidi {
             throw new Error('duplexMidi config is required')
         }
 
-        const problems = []
-
         const { isMidi, ports } = config
 
         if (isMidi === undefined) {
-            problems.push('isMidi is required')
-            return problems
-        } else {
-            try {
-                this.midiCheckbox.tryConfig(isMidi)
-            } catch (error) {
-                problems.push(error.message)
-            }
+            throw new Error('isMidi is required')
         }
+
+        if (typeof isMidi !== 'boolean') {
+            throw new Error('isMidi must be a boolean')
+        }
+
+        this.midiCheckbox.tryConfig(isMidi)
+
+        const problems = []
 
         if (isMidi) {
             try {

@@ -1,22 +1,24 @@
 const PART_NAMES = ['bass', 'drum', 'keys', 'lead']
 const MIDI_PORTS = {
     INPUT: [
-        'Transporter',
-        'Bass Controller',
-        'Drum Controller',
-        'Keys Controller',
-        'Lead Controller',
+        'IAC Driver Bus 1',
+        // 'Transporter',
+        // 'Bass Controller',
+        // 'Drum Controller',
+        // 'Keys Controller',
+        // 'Lead Controller',
     ],
     OUTPUT: [
-        'Transporter',
-        'Bass Controller',
-        'Drum Controller',
-        'Keys Controller',
-        'Lead Controller',
-        'Bass Synthesizer',
-        'Drum Synthesizer',
-        'Keys Synthesizer',
-        'Lead Synthesizer',
+        'IAC Driver Bus 1',
+        // 'Transporter',
+        // 'Bass Controller',
+        // 'Drum Controller',
+        // 'Keys Controller',
+        // 'Lead Controller',
+        // 'Bass Synthesizer',
+        // 'Drum Synthesizer',
+        // 'Keys Synthesizer',
+        // 'Lead Synthesizer',
     ],
 }
 
@@ -46,10 +48,10 @@ function makeMidiSelect(isInput) {
     )
 }
 
-function makeDuplexConfig(portion) {
+function makeDuplexConfig(name) {
     return dm('div', { class: 'midi-config' },
         dm('label', { class: 'wide' },
-            dm('b', {}, portion.split('-').at(-1).toUpperCase()),
+            dm('b', {}, name),
             dm('input', { type: 'checkbox' }),
         ),
         dm('div', { class: 'wide' },
@@ -68,7 +70,7 @@ function makeDuplexConfig(portion) {
 function makePartConfig(partName) {
     return dm('fieldset', {},
         dm('legend', {}, partName.toUpperCase()),
-        makeDuplexConfig(`${partName}-controller`),
+        makeDuplexConfig('CONTROLLER'),
         dm('hr'),
         dm('div', { class: 'midi-config' },
             dm('label', { class: 'wide' },
@@ -93,7 +95,7 @@ document.body.append(
             dm('input', { type: 'checkbox', name: 'band-show-chart-source', checked: 'true' })
         ),
         dm('hr', { class: 'wide' }),
-        makeDuplexConfig('transporter'),
+        makeDuplexConfig('TRANSPORTER'),
         ...PART_NAMES.map(makePartConfig),
         dm('div', { class: 'wide' },
             dm('button', { type: 'button' }, 'Refresh MIDI Ports'),

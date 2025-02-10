@@ -241,8 +241,8 @@ Misc:
             },
             synthesizer: {
                 isMidi: true,
-                ports: {
-                    output: '%%BASS_SYNTHESIZER_MIDI_OUTPUT%%',
+                output: {
+                    port: '%%BASS_SYNTHESIZER_MIDI_OUTPUT%%',
                     channel: '%%BASS_SYNTHESIZER_MIDI_CHANNEL%%',
                 },
             },
@@ -257,8 +257,8 @@ Misc:
             },
             synthesizer: {
                 isMidi: true,
-                ports: {
-                    output: '%%DRUM_SYNTHESIZER_MIDI_OUTPUT%%',
+                output: {
+                    port: '%%DRUM_SYNTHESIZER_MIDI_OUTPUT%%',
                     channel: '%%DRUM_SYNTHESIZER_MIDI_CHANNEL%%',
                 },
             },
@@ -273,8 +273,8 @@ Misc:
             },
             synthesizer: {
                 isMidi: true,
-                ports: {
-                    output: '%%KEYS_SYNTHESIZER_MIDI_OUTPUT%%',
+                output: {
+                    port: '%%KEYS_SYNTHESIZER_MIDI_OUTPUT%%',
                     channel: '%%KEYS_SYNTHESIZER_MIDI_CHANNEL%%',
                 },
             },
@@ -289,8 +289,8 @@ Misc:
             },
             synthesizer: {
                 isMidi: true,
-                ports: {
-                    output: '%%LEAD_SYNTHESIZER_MIDI_OUTPUT%%',
+                output: {
+                    port: '%%LEAD_SYNTHESIZER_MIDI_OUTPUT%%',
                     channel: '%%LEAD_SYNTHESIZER_MIDI_CHANNEL%%',
                 },
             },

@@ -1,6 +1,11 @@
-import { makeEnum } from './utility.js'
+import { DuplexMidi } from './midi-utilities.js'
 
-const CONTROLLER_TYPES = ['DOM', 'MIDI']
-export const CONTROLLER_TYPE_ENUM = makeEnum(CONTROLLER_TYPES)
+export default class Controller extends DuplexMidi {
+    constructor() {
+        super()
+    }
 
-export default class Controller { }
+    getConfigElement(name) {
+        return super.getConfigElement('CONTROLLER')
+    }
+}
