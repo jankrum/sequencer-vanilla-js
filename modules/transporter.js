@@ -1,4 +1,4 @@
-import { DuplexMidi } from "./midi-utilities.js"
+import { DuplexMidi } from "./simplex-and-duplex.js"
 
 export default class Transporter extends DuplexMidi {
     constructor() {

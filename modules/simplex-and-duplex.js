@@ -1,4 +1,4 @@
-import { dm } from './utility.js'
+import dm from './dm.js'
 
 const midiAccess = await (async () => {
     try {
@@ -13,6 +13,8 @@ const hasMidiAccess = midiAccess !== null
 class MidiCheckbox {
     // Properties
     isChecked = true
+
+    checkbox = dm('input', { type: 'checkbox', checked: this.isChecked })
 
     tryConfig(isMidi) {
         if (isMidi === undefined) {
@@ -31,7 +33,7 @@ class MidiCheckbox {
     }
 
     getConfigElement(name) {
-        const checkbox = dm('input', { type: 'checkbox' })
+        const checkbox = this.checkbox
         checkbox.disabled = !hasMidiAccess
         checkbox.checked = hasMidiAccess && this.isChecked
 
@@ -48,35 +50,28 @@ class MidiCheckbox {
     getConfigValues() {
         return this.isChecked
     }
+
+    addEventListenerToCheckboxChange(callback) {
+        this.checkbox.addEventListener('change', callback)
+    }
 }
 
+//#region MIDI PORTS
 class MidiPort {
-    getFromMap(map, portName) {
-        if (midiAccess === null) {
-            throw new Error('MIDI not available')
+    // Provide a default "blankName" for all subclasses
+    static blankName = 'No Devices Found';
+
+    select = dm('select', {})
+
+    constructor() {
+        if (new.target === MidiPort) {
+            throw new Error("MidiPort is an abstract class and cannot be instantiated directly.")
         }
 
-        const valuesArray = Array.from(map.values())
-        const port = valuesArray.find(port => port.name === portName)
-
-        if (!port) {
-            throw new Error(`port ${portName} not found`)
-        }
-
-        return port
+        // Default properties
+        this.portName = this.constructor.blankName
+        this.port = null
     }
-
-    static refresh
-}
-
-class InputMidiPort {
-    // Class variables
-    static blankName = 'No Devices Found'
-    static ports = hasMidiAccess ? Array.from(midiAccess.inputs.values()) : [{ name: InputMidiPort.blankName }]
-
-    // Properties
-    portName = InputMidiPort.blankName
-    port = null
 
     tryConfig(portName) {
         if (portName === undefined) {
@@ -91,7 +86,7 @@ class InputMidiPort {
             throw new Error('MIDI not available')
         }
 
-        const port = InputMidiPort.ports.find(port => port.name === portName)
+        const port = this.constructor.ports.find((port) => port.name === portName)
 
         if (!port) {
             throw new Error(`port ${portName} not found`)
@@ -102,94 +97,86 @@ class InputMidiPort {
     }
 
     getConfigElement() {
-        const select = dm('select', {},
-            ...InputMidiPort.ports.map(port => dm('option', { value: port.name, selected: port.name === this.portName }, port.name))
-        )
+        const Subclass = this.constructor // the subclass
 
+        const select = this.select
+
+        select.append(...Subclass.ports.map((port) =>
+            dm(
+                'option',
+                {
+                    value: port.name,
+                    selected: port.name === this.portName,
+                },
+                port.name
+            )
+        ))
+
+        // Disable selection if MIDI is not accessible
         select.disabled = !hasMidiAccess
 
+        // Event handler to update values
         const updatePort = () => {
-            this.portName = select.value ?? InputMidiPort.blankName
-            this.port = InputMidiPort.ports.find(port => port.name === this.portName) ?? null
+            this.portName = select.value ?? Subclass.blankName
+            this.port = Subclass.ports.find((port) => port.name === this.portName) ?? null
         }
 
+        // Listen for changes
         select.addEventListener('change', updatePort)
 
+        // Initialize once
         updatePort()
 
-        return dm('label', {},
-            'Input: ',
-            select
-        )
+        // Provide a label and return
+        return dm('label', {}, this.getLabelText(), select)
     }
 
+    // Used to label the select field; must be overridden in subclasses
+    getLabelText() {
+        throw new Error('getLabelText() must be implemented by subclass')
+    }
+
+    // A hook to return the relevant config values
     getConfigValues() {
         return this.portName
     }
-}
 
-class OutputMidiPort {
-    // Class variables
-    static blankName = 'No Devices Found'
-    static ports = hasMidiAccess ? Array.from(midiAccess.outputs.values()) : [{ name: OutputMidiPort.blankName }]
-
-    // Properties
-    portName = OutputMidiPort.blankName
-    port = null
-
-    tryConfig(portName) {
-        if (portName === undefined) {
-            throw new Error('portName is required')
-        }
-
-        if (typeof portName !== 'string') {
-            throw new Error('portName must be a string')
-        }
-
-        if (!hasMidiAccess) {
-            throw new Error('MIDI not available')
-        }
-
-        const port = OutputMidiPort.ports.find(port => port.name === portName)
-
-        if (!port) {
-            throw new Error(`port ${portName} not found`)
-        }
-
-        this.portName = portName
-        this.port = port
-    }
-
-    getConfigElement() {
-        const select = dm('select', {},
-            ...OutputMidiPort.ports.map(port => dm('option', { value: port.name, selected: port.name === this.portName }, port.name))
-        )
-
-        select.disabled = !hasMidiAccess
-
-        const updatePort = () => {
-            this.portName = select.value ?? OutputMidiPort.blankName
-            this.port = OutputMidiPort.ports.find(port => port.name === this.portName) ?? null
-        }
-
-        select.addEventListener('change', updatePort)
-
-        updatePort()
-
-        return dm('label', {},
-            'Output: ',
-            select
-        )
-    }
-
-    getConfigValues() {
-        return this.portName
+    set disabled(value) {
+        this.select.disabled = !hasMidiAccess || value
     }
 }
+
+class InputMidiPort extends MidiPort {
+    // Provide static ports for input
+    static get ports() {
+        const portArray = hasMidiAccess ? Array.from(midiAccess.inputs.values()) : []
+        return portArray.length > 0 ? portArray : [{ name: this.blankName }]
+    }
+
+    // Customize the label for input
+    getLabelText() {
+        return 'Input: '
+    }
+}
+
+class OutputMidiPort extends MidiPort {
+    // Provide static ports for output
+    static get ports() {
+        const portArray = hasMidiAccess ? Array.from(midiAccess.outputs.values()) : []
+        return portArray.length > 0 ? portArray : [{ name: this.blankName }]
+    }
+
+    // Customize the label for output
+    getLabelText() {
+        return 'Output: '
+    }
+}
+//#endregion
 
 class OutputMidiChannel {
     // Properties
     channel = 1
+    input = dm('input', { type: 'number', min: '1', max: '16', value: 1 })
 
     tryConfig(channel) {
         if (channel === undefined) {
@@ -208,10 +195,12 @@ class OutputMidiChannel {
     }
 
     getConfigElement() {
-        const input = dm('input', { type: 'number', min: '1', max: '16', value: this.channel })
+        const input = this.input
+
+        input.value = this.channel
 
         input.addEventListener('change', () => {
-            this.channel = input.value
+            this.channel = parseInt(input.value)
         })
 
         return dm('label', {},
@@ -222,6 +211,10 @@ class OutputMidiChannel {
 
     getConfigValues() {
         return this.channel
+    }
+
+    set disabled(value) {
+        this.input.disabled = !hasMidiAccess || value
     }
 }
 
@@ -276,6 +269,18 @@ export class SimplexMidi {
     }
 
     getConfigElement(name) {
+        const { midiCheckbox, midiCheckbox: { checkbox }, outputMidiPort, outputMidiChannel } = this
+
+        const updateMidiDisabled = () => {
+            const disabled = !checkbox.checked
+            outputMidiPort.disabled = disabled
+            outputMidiChannel.disabled = disabled
+        }
+
+        midiCheckbox.addEventListenerToCheckboxChange(updateMidiDisabled)
+
+        updateMidiDisabled()
+
         return dm('div', { class: 'midi-config' },
             this.midiCheckbox.getConfigElement(name),
             dm('div', { class: 'wide' },
@@ -286,13 +291,14 @@ export class SimplexMidi {
     }
 
     getConfigValues() {
-        return {
-            isMidi: this.midiCheckbox.getConfigValues(),
+        const isMidi = this.midiCheckbox.getConfigValues()
+
+        return Object.assign({ isMidi }, isMidi ? {
             output: {
                 port: this.outputMidiPort.getConfigValues(),
                 channel: this.outputMidiChannel.getConfigValues()
             }
-        }
+        } : {})
     }
 }
 
@@ -343,22 +349,35 @@ export class DuplexMidi {
     }
 
     getConfigElement(name) {
+        const { midiCheckbox, midiCheckbox: { checkbox }, inputMidiPort, outputMidiPort } = this
+
+        const updateMidiDisabled = () => {
+            const disabled = !checkbox.checked
+            inputMidiPort.disabled = disabled
+            outputMidiPort.disabled = disabled
+        }
+
+        midiCheckbox.addEventListenerToCheckboxChange(updateMidiDisabled)
+
+        updateMidiDisabled()
+
         return dm('div', { class: 'midi-config' },
-            this.midiCheckbox.getConfigElement(name),
+            midiCheckbox.getConfigElement(name),
             dm('div', { class: 'wide' },
-                this.inputMidiPort.getConfigElement(),
-                this.outputMidiPort.getConfigElement()
+                inputMidiPort.getConfigElement(),
+                outputMidiPort.getConfigElement()
             )
         )
     }
 
     getConfigValues() {
-        return {
-            isMidi: this.midiCheckbox.getConfigValues(),
+        const isMidi = this.midiCheckbox.getConfigValues()
+
+        return Object.assign({ isMidi }, isMidi ? {
             ports: {
                 input: this.inputMidiPort.getConfigValues(),
                 output: this.outputMidiPort.getConfigValues()
             }
-        }
+        } : {})
     }
 }

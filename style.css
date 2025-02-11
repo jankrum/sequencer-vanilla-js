@@ -107,7 +107,8 @@ label {
     gap: 1rem;
 }
 
-select:disabled {
+select:disabled,
+input[type="number"]:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }

@@ -6,13 +6,7 @@ export function* timesDo(n, fn) {
 
 //-----------------------------------------------------------------------------
 
-export function makeEnum(array) {
-    return Object.freeze(Object.fromEntries(array.map((item, index) => [item, index])))
-}
-
-//-----------------------------------------------------------------------------
-
-export function dm(tag, attributes = {}, ...children) {
+export default function dm(tag, attributes = {}, ...children) {
     const element = document.createElement(tag)
 
     for (const [key, value] of Object.entries(attributes)) {

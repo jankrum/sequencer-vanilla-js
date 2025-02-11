@@ -1,7 +1,7 @@
 // import Paginator from './paginator.js'
 import Transporter from './transporter.js'
 import Band from './band.js'
-import { dm } from './utility.js'
+import dm from './dm.js'
 
 export default class Sequencer {
     // Class variables
@@ -13,7 +13,7 @@ export default class Sequencer {
     band = new Band()
 
     // Properties
-    showChartSource = false
+    showChartSource = true
 
     // Starts the sequencer
     async start() {
@@ -42,7 +42,7 @@ export default class Sequencer {
             // Yes, we can start from the URL
             return true
         } catch (error) {
-            console.error(error)
+            // console.error(error)
 
             urlParams.delete(Sequencer.#configUrlKey)
             const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`
@@ -149,6 +149,7 @@ export default class Sequencer {
 
                 // Get the config from the form and try it
                 const config = getConfigValues()
+                console.info('Config:', config)
                 this.tryConfig(config)
 
                 // If we reach this point, the config is valid and we can wrap it up

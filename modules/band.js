@@ -1,6 +1,6 @@
 import Controller from './controller.js'
 import Synthesizer from './synthesizer.js'
-import { dm } from './utility.js'
+import dm from './dm.js'
 
 class Part {
     controller = new Controller()

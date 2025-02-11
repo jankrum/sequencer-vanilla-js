@@ -1,4 +1,4 @@
-import { SimplexMidi } from './midi-utilities.js'
+import { SimplexMidi } from './simplex-and-duplex.js'
 
 export default class Synthesizer extends SimplexMidi {
     constructor() {
