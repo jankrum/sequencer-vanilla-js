@@ -2,6 +2,7 @@
 import Transporter from './transporter.js'
 import Band from './band.js'
 import dm from './dm.js'
+import UrlMap from './url-map.js'
 
 export default class Sequencer {
     // Class variables
@@ -23,18 +24,9 @@ export default class Sequencer {
 
     // Returns a bool indicating if the sequencer was able to start from the URL
     canStartFromUrl() {
-        // Try to use the config from the URL
-        const urlParams = new URLSearchParams(window.location.search)
-        const encodedConfig = urlParams.get(Sequencer.#configUrlKey)
-
         try {
-            if (!encodedConfig) {
-                throw new Error('No configuration found in URL')
-            }
-
-            const base64String = decodeURIComponent(encodedConfig)
-            const jsonString = atob(base64String)
-            const config = JSON.parse(jsonString)
+            // Try to use the config from the URL
+            const config = UrlMap.getJson(Sequencer.#configUrlKey)
 
             // This will throw an error if the config is invalid
             this.tryConfig(config)
@@ -44,9 +36,7 @@ export default class Sequencer {
         } catch (error) {
             // console.error(error)
 
-            urlParams.delete(Sequencer.#configUrlKey)
-            const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`
-            window.history.replaceState(null, '', newUrl)
+            UrlMap.delete(Sequencer.#configUrlKey)
         }
 
         // No, we cannot start from the URL
@@ -151,6 +141,10 @@ export default class Sequencer {
                 const config = getConfigValues()
                 console.info('Config:', config)
                 this.tryConfig(config)
+
+                if (rememberConfigCheckbox.checked) {
+                    UrlMap.setJson(Sequencer.#configUrlKey, config)
+                }
 
                 // If we reach this point, the config is valid and we can wrap it up
                 document.body.removeChild(configForm)
