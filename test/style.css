@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.status-pending {
+    background-color: yellow;
+}
+
+.status-passed {
+    color: white;
+    background-color: green;
+}
+
+.status-failed {
+    color: white;
+    background-color: red;
+}
+
+.test-error-display {
+    color: red;
+    text-decoration: underline;
+}
+
+.test,
+#results {
+    border: 1px solid black;
+}

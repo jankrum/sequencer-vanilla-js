@@ -1,0 +1,3 @@
+[submodule "test/test"]
+	path = test/test
+	url = https://github.com/jankrum/test.git
