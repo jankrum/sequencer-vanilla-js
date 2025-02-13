@@ -8,4 +8,8 @@ export default class Transporter extends DuplexMidi {
     getConfigElement() {
         return super.getConfigElement('TRANSPORTER')
     }
+
+    connect() { }
+
+    render() { }
 }

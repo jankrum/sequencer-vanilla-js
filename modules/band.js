@@ -109,4 +109,8 @@ export default class Band {
     getConfigValues() {
         return Object.fromEntries(Band.partNames.map(name => [name, this.parts[name].getConfigValues()]))
     }
+
+    connect() { }
+
+    render() { }
 } 

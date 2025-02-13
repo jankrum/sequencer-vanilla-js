@@ -1,4 +1,4 @@
-// import Paginator from './paginator.js'
+import Paginator from './paginator.js'
 import Transporter from './transporter.js'
 import Band from './band.js'
 import dm from './dm.js'
@@ -9,7 +9,7 @@ export default class Sequencer {
     static #configUrlKey = 'config'
 
     // Child objects
-    // paginator = new Paginator()
+    paginator = new Paginator()
     transporter = new Transporter()
     band = new Band()
 
@@ -20,6 +20,18 @@ export default class Sequencer {
     async start() {
         // Try to start from the URL, otherwise wait for the user to submit a form
         this.canStartFromUrl() || await this.startFromUser()
+
+        const { paginator, transporter, band } = this
+        paginator.connect(transporter, band)
+        transporter.connect(paginator, band)
+        band.connect(transporter)
+
+        const transporterDiv = transporter.render()
+        const bandDiv = band.render()
+
+        document.body.append(transporterDiv, bandDiv)
+
+        paginator.start()
     }
 
     // Returns a bool indicating if the sequencer was able to start from the URL
