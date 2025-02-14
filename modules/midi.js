@@ -14,6 +14,7 @@ class MidiCheckbox {
     // Properties
     isChecked = true
 
+    // Make it now so we can attach event listeners
     checkbox = dm('input', { type: 'checkbox', checked: this.isChecked })
 
     tryConfig(isMidi) {
@@ -58,14 +59,14 @@ class MidiCheckbox {
 
 //#region MIDI PORTS
 class MidiPort {
-    // Provide a default "blankName" for all subclasses
+    // Provide a default blank name for all subclasses
     static blankName = 'No Devices Found';
 
     select = dm('select', {})
 
     constructor() {
         if (new.target === MidiPort) {
-            throw new Error("MidiPort is an abstract class and cannot be instantiated directly.")
+            throw new Error('MidiPort is an abstract class and cannot be instantiated directly.')
         }
 
         // Default properties
@@ -247,24 +248,34 @@ export class SimplexMidi {
 
         this.midiCheckbox.tryConfig(isMidi)
 
-        const problems = []
-
         if (isMidi) {
+            if (output === undefined) {
+                throw new Error('output config is required')
+            }
+
+            if (typeof output !== 'object') {
+                throw new Error('output config must be an object')
+            }
+
+            const { port, channel } = output
+
+            const problems = []
+
             try {
-                this.outputMidiPort.tryConfig(output.port)
+                this.outputMidiPort.tryConfig(port)
             } catch (error) {
                 problems.push(error.message)
             }
 
             try {
-                this.outputMidiChannel.tryConfig(output.channel)
+                this.outputMidiChannel.tryConfig(channel)
             } catch (error) {
                 problems.push(error.message)
             }
-        }
 
-        if (problems.length > 0) {
-            throw new Error(problems.join('\n'))
+            if (problems.length > 0) {
+                throw new Error(problems.join('\n'))
+            }
         }
     }
 
@@ -282,10 +293,10 @@ export class SimplexMidi {
         updateMidiDisabled()
 
         return dm('div', { class: 'midi-config' },
-            this.midiCheckbox.getConfigElement(name),
+            midiCheckbox.getConfigElement(name),
             dm('div', { class: 'wide' },
-                this.outputMidiPort.getConfigElement(),
-                this.outputMidiChannel.getConfigElement()
+                outputMidiPort.getConfigElement(),
+                outputMidiChannel.getConfigElement()
             )
         )
     }
@@ -331,10 +342,18 @@ export class DuplexMidi {
 
         this.midiCheckbox.tryConfig(isMidi)
 
-        const problems = []
-
         if (isMidi) {
+            if (ports === undefined) {
+                throw new Error('ports config is required')
+            }
+
+            if (typeof ports !== 'object') {
+                throw new Error('ports config must be an object')
+            }
+
             const { input, output } = ports
+
+            const problems = []
 
             if (input === undefined) {
                 problems.push('input port is required')
@@ -359,10 +378,10 @@ export class DuplexMidi {
                     problems.push(error.message)
                 }
             }
-        }
 
-        if (problems.length > 0) {
-            throw new Error(problems.join('\n'))
+            if (problems.length > 0) {
+                throw new Error(problems.join('\n'))
+            }
         }
     }
 

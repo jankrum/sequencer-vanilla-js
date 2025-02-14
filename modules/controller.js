@@ -1,4 +1,4 @@
-import { DuplexMidi } from './simplex-and-duplex.js'
+import { DuplexMidi } from './midi.js'
 
 export default class Controller extends DuplexMidi {
     constructor() {

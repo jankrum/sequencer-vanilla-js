@@ -22,6 +22,7 @@ export default class Sequencer {
         this.canStartFromUrl() || await this.startFromUser()
 
         const { paginator, transporter, band } = this
+
         paginator.connect(transporter, band)
         transporter.connect(paginator, band)
         band.connect(transporter)
@@ -56,32 +57,32 @@ export default class Sequencer {
     tryConfig(config) {
         // Check if there even is a config
         if (!config) {
-            throw new Error('"config" is required')
+            throw new Error('config is required')
         }
 
         if (typeof config !== 'object') {
-            throw new Error('"config" must be an object')
+            throw new Error('config must be an object')
         }
 
         // We use a problems variable to collect all the problems because we want
         // to be able to evaluate transporter and band even if the other one fails
-        const problems = []
-
         const { showChartSource, transporter, band } = config
 
+        const problems = []
+
         if (showChartSource === undefined) {
-            problems.push('"showChartSource" is required')
+            problems.push('showChartSource is required')
         } else if (typeof showChartSource !== 'boolean') {
-            problems.push('"showChartSource" must be a boolean')
+            problems.push('showChartSource must be a boolean')
         } else {
             // Set the showChartSource property so that it may be used in the startFromForm method
             this.showChartSource = showChartSource
         }
 
         if (transporter === undefined) {
-            problems.push('"transporter" is required')
+            problems.push('transporter is required')
         } else if (typeof transporter !== 'object') {
-            problems.push('"transporter" must be an object')
+            problems.push('transporter must be an object')
         } else {
             try {
                 this.transporter.tryConfig(transporter)
@@ -91,9 +92,9 @@ export default class Sequencer {
         }
 
         if (band === undefined) {
-            problems.push('"band" is required')
+            problems.push('band is required')
         } else if (typeof band !== 'object') {
-            problems.push('"band" must be an object')
+            problems.push('band must be an object')
         } else {
             try {
                 this.band.tryConfig(band)
@@ -109,6 +110,8 @@ export default class Sequencer {
 
     // Returns a promise that resolves when the user has successfully submitted the form
     startFromUser() {
+        const { transporter, band } = this
+
         // Show Chart Source
         const showChartSourceCheckbox = dm('input', { type: 'checkbox', name: 'show-chart-source' })
         showChartSourceCheckbox.checked = this.showChartSource
@@ -117,8 +120,8 @@ export default class Sequencer {
         const hr = dm('hr', { class: 'wide' })
 
         // Transporter and Band
-        const transporterConfig = this.transporter.getConfigElement()
-        const bandConfigs = this.band.getConfigElements()  // An array of divs
+        const transporterConfig = transporter.getConfigElement()
+        const bandConfigs = band.getConfigElements()  // An array of divs
 
         // Miscellaneous Div
         const refreshMidiButton = dm('button', {}, 'Refresh MIDI Ports')
@@ -139,8 +142,8 @@ export default class Sequencer {
         // A function that returns the config
         const getConfigValues = () => ({
             showChartSource: showChartSourceCheckbox.checked,
-            transporter: this.transporter.getConfigValues(),
-            band: this.band.getConfigValues()
+            transporter: transporter.getConfigValues(),
+            band: band.getConfigValues()
         })
 
         document.body.append(configForm)
@@ -153,7 +156,7 @@ export default class Sequencer {
 
                 // Get the config from the form and try it
                 const config = getConfigValues()
-                console.info('Config:', config)
+
                 this.tryConfig(config)
 
                 if (rememberConfigCheckbox.checked) {

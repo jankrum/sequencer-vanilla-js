@@ -20,24 +20,6 @@ Write a single HTML file that contains all of the styles and code for the app.
 
 --------------------------------------------------------------------------------------------------------
 
-New config idea:
-Transporter:
-    -Is MIDI checkbox
-    -MIDI input/output selects
-Band:
-    -Checkbox for if there should be a textarea for the source code of the chart
-    -4 parts: bass, drum, keys, lead
-    -Each part has a controller and a synthesizer
-        -Controller:
-            -Is MIDI checkbox
-            -MIDI input/output selects
-        -Synthesizer:
-            -Checkbox for if it is over MIDI or not
-            -MIDI output select
-            -MIDI channel input
-Misc:
-    -Checkbox to store the config in the URL
-
 {
     showChartSource: false,
     transporter: {
@@ -158,16 +140,6 @@ Misc:
 
 --------------------------------------------------------------------------------------------------------
 
-Things to implement in new build:
--Editable source code for the charts
--MIDI transporters and controllers
--Recording performances to a MIDI file: "%%CHART_NAME%%-%%TIMESTAMP%%.mid"
--Controllers having richer control creation
--Create toggle-able titles for config that are like checkboxes
--Replace MIDI config checkboxes and show-chart-source checkbox be toggle-able titles
-
---------------------------------------------------------------------------------------------------------
-
 Evolution of the project:
 
 2018-2019:
@@ -196,20 +168,15 @@ Evolution of the project:
 -Broke up with all packages, dependencies, and frameworks
 -Rebuilt the project in vanilla javascript
 -Just wanted to do it
+-Came up with testing framework and objects owning their config
 
 --------------------------------------------------------------------------------------------------------
 
-Refactor Ideas:
--Configs get stuff from the portions they config
-
---------------------------------------------------------------------------------------------------------
-
-Every object in has the following:
--A way to test its portion of the config
-    -This either passes and returns null or fails and throws an error
-    -Any values that are valid are stored in the object
--A way to get the DOM element(s) for the portion of the config
-    -The DOM element created is returned
--A way to get the config object for the portion of the config
-    -The config object is returned
-    -This should not be able to fail, as any invalid values should have been caught by the test
+TODO LIST:
+- Make MIDI refresh button work again
+- Create toggle-able titles for config that are like checkboxes
+- Replace MIDI config checkboxes and show-chart-source checkbox be toggle-able titles
+- Editable source code for the charts
+- MIDI transporters and controllers
+- Controllers having richer control creation
+- Recording performances to a MIDI file: "%%CHART_NAME%%-%%TIMESTAMP%%.mid"
