@@ -315,6 +315,10 @@ export class DuplexMidi {
             throw new Error('duplexMidi config is required')
         }
 
+        if (typeof config !== 'object') {
+            throw new Error('duplexMidi config must be an object')
+        }
+
         const { isMidi, ports } = config
 
         if (isMidi === undefined) {
@@ -330,16 +334,30 @@ export class DuplexMidi {
         const problems = []
 
         if (isMidi) {
-            try {
-                this.inputMidiPort.tryConfig(ports.input)
-            } catch (error) {
-                problems.push(error.message)
+            const { input, output } = ports
+
+            if (input === undefined) {
+                problems.push('input port is required')
+            } else if (typeof input !== 'string') {
+                problems.push('input port must be a string')
+            } else {
+                try {
+                    this.inputMidiPort.tryConfig(ports.input)
+                } catch (error) {
+                    problems.push(error.message)
+                }
             }
 
-            try {
-                this.outputMidiPort.tryConfig(ports.output)
-            } catch (error) {
-                problems.push(error.message)
+            if (output === undefined) {
+                problems.push('output port is required')
+            } else if (typeof output !== 'string') {
+                problems.push('output port must be a string')
+            } else {
+                try {
+                    this.outputMidiPort.tryConfig(ports.output)
+                } catch (error) {
+                    problems.push(error.message)
+                }
             }
         }
 

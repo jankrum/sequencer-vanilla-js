@@ -74,6 +74,10 @@ export default class Band {
             throw new Error('band config is required')
         }
 
+        if (typeof config !== 'object') {
+            throw new Error('band config must be an object')
+        }
+
         const problems = []
 
         for (const partName of Band.partNames) {

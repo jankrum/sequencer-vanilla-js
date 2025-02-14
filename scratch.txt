@@ -39,7 +39,7 @@ Misc:
     -Checkbox to store the config in the URL
 
 {
-    showSourceCode: false,
+    showChartSource: false,
     transporter: {
         isMidi: false,
     },
@@ -80,7 +80,7 @@ Misc:
 }
 
 {
-    showSourceCode: true,
+    showChartSource: true,
     transporter: {
         isMidi: true,
         ports: {

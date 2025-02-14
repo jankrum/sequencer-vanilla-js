@@ -6,7 +6,7 @@ import UrlMap from './url-map.js'
 
 export default class Sequencer {
     // Class variables
-    static #configUrlKey = 'config'
+    static configUrlKey = 'config'
 
     // Child objects
     paginator = new Paginator()
@@ -38,7 +38,7 @@ export default class Sequencer {
     canStartFromUrl() {
         try {
             // Try to use the config from the URL
-            const config = UrlMap.getJson(Sequencer.#configUrlKey)
+            const config = UrlMap.getJson(Sequencer.configUrlKey)
 
             // This will throw an error if the config is invalid
             this.tryConfig(config)
@@ -46,9 +46,7 @@ export default class Sequencer {
             // Yes, we can start from the URL
             return true
         } catch (error) {
-            // console.error(error)
-
-            UrlMap.delete(Sequencer.#configUrlKey)
+            UrlMap.delete(Sequencer.configUrlKey)
         }
 
         // No, we cannot start from the URL
@@ -59,6 +57,10 @@ export default class Sequencer {
         // Check if there even is a config
         if (!config) {
             throw new Error('"config" is required')
+        }
+
+        if (typeof config !== 'object') {
+            throw new Error('"config" must be an object')
         }
 
         // We use a problems variable to collect all the problems because we want
@@ -155,7 +157,7 @@ export default class Sequencer {
                 this.tryConfig(config)
 
                 if (rememberConfigCheckbox.checked) {
-                    UrlMap.setJson(Sequencer.#configUrlKey, config)
+                    UrlMap.setJson(Sequencer.configUrlKey, config)
                 }
 
                 // If we reach this point, the config is valid and we can wrap it up

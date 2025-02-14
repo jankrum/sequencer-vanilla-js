@@ -37,4 +37,8 @@ export default class UrlMap {
         const newUrl = `${window.location.origin}${window.location.pathname}${hasParams ? '?' : ''}${urlParamsString}`
         window.history.replaceState(null, '', newUrl)
     }
+
+    static clear() {
+        window.history.replaceState(null, '', window.location.pathname)
+    }
 }
