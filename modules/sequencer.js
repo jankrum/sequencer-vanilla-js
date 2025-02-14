@@ -30,7 +30,14 @@ export default class Sequencer {
         const transporterDiv = transporter.render()
         const bandDiv = band.render()
 
-        document.body.append(transporterDiv, bandDiv)
+        function appendToBodyIfDefined(element) {
+            if (element) {
+                document.body.append(element)
+            }
+        }
+
+        appendToBodyIfDefined(transporterDiv)
+        appendToBodyIfDefined(bandDiv)
 
         paginator.start()
     }

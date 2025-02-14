@@ -1,7 +1,9 @@
 import Controller from './controller.js'
 import Synthesizer from './synthesizer.js'
 import dm from './dm.js'
+import timesDo from './times-do.js'
 
+//#region Part
 class Part {
     controller = new Controller()
     synthesizer = new Synthesizer()
@@ -64,7 +66,108 @@ class Part {
         }
     }
 }
+//#endregion
 
+//#region Helper
+const HELPER = {
+    EVENT: Object.freeze({
+        NOTE_ON: 144,
+        NOTE_OFF: 128,
+    }),
+    TIMING: Object.freeze({
+        convertBeatsToMs(beats, tempo) {
+            return beats * 60000 / tempo
+        },
+        shorten(durationMs) {
+            return Math.max(durationMs - 0.1, durationMs * 0.9)
+        }
+    }),
+    midiNoteToPitch(midiNote) {
+        if (midiNote < 0 || midiNote > 127) {
+            throw new Error('Out of bound MIDI note value')
+        }
+
+        const noteNames = [
+            ['C', 'B#'],
+            ['C#', 'Db'],
+            ['D'],
+            ['D#', 'Eb'],
+            ['E', 'Fb'],
+            ['F', 'E#'],
+            ['F#', 'Gb'],
+            ['G'],
+            ['G#', 'Ab'],
+            ['A'],
+            ['A#', 'Bb'],
+            ['B', 'Cb'],
+        ]
+
+        const octave = Math.floor(midiNote / 12) - 1
+        const noteIndex = midiNote % 12
+
+        // Get possible enharmonic equivalents
+        const possibleNotes = noteNames[noteIndex].map(noteName => {
+            // Adjust octave calculation for notes like B#
+            if (noteName === 'B#' && noteIndex === 0) {
+                return `${noteName}${octave - 1}`
+            } else {
+                return `${noteName}${octave}`
+            }
+        })
+
+        return possibleNotes
+    },
+    PITCH: Object.freeze(Object.fromEntries([...timesDo(128, noteNumber => {
+        if (noteNumber < 0 || noteNumber > 127) {
+            throw new Error('Out of bound MIDI note value')
+        }
+
+        const noteNames = [
+            ['C', 'B#'],
+            ['C#', 'Db'],
+            ['D'],
+            ['D#', 'Eb'],
+            ['E', 'Fb'],
+            ['F', 'E#'],
+            ['F#', 'Gb'],
+            ['G'],
+            ['G#', 'Ab'],
+            ['A'],
+            ['A#', 'Bb'],
+            ['B', 'Cb'],
+        ]
+
+        const noteIndex = noteNumber % 12
+        const octave = Math.floor(noteNumber / 12) - 1
+
+        // Get possible enharmonic equivalents
+        const possibleNotes = noteNames[noteIndex].map(noteName => {
+            // Adjust octave calculation for notes like B#
+            if (noteName === 'B#' && noteIndex === 0) {
+                return `${noteName}${octave - 1}`
+            } else {
+                return `${noteName}${octave}`
+            }
+        })
+
+        return possibleNotes.map(n => [n, noteNumber])
+    })].flat())),
+    DYNAMICS: Object.freeze({
+        PPPP: 8,
+        PPP: 16,
+        PP: 32,
+        P: 48,
+        MP: 64,
+        MF: 80,
+        F: 96,
+        FF: 112,
+        FFF: 120,
+        FFFF: 127,
+    }),
+}
+//#endregion
+
+//#region Band
 export default class Band {
     static partNames = ['bass', 'drum', 'keys', 'lead']
     parts = Object.fromEntries(Band.partNames.map(name => [name, new Part()]))
@@ -117,4 +220,7 @@ export default class Band {
     connect() { }
 
     render() { }
-} 
+
+    setChart(chart) { }
+}
+//#endregion
