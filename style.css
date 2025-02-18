@@ -155,69 +155,84 @@ button:hover {
     color: var(--background-color);
 } */
 
---------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
 /*                                 Transporter                                */
 /* -------------------------------------------------------------------------- */
 
-/* .transporter-button {
-    width: 2em;
-    height: 2em;
+#transporter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-    border: 1.5px solid;
-    border-radius: 50%;
-    font-size: 2.5rem;
+    padding-bottom: 2rem;
 
-    padding: 1rem; */
-/* align-items: center; */
-/* margin: 0 0.5rem 2rem 0.5rem;
+    border-bottom: 1px solid var(--text-color);
+}
 
-    cursor: pointer;
+#transporter>div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.transporter-button {
+    width: 4rem;
+    height: 4rem;
+
+    text-align: center;
 
     color: var(--background-color);
     background-color: var(--text-color);
 
-    transition: transform 0.2s;
+    padding: 0;
+
+    border: 1px solid var(--text-color);
+    border-radius: 1rem;
+    box-sizing: content-box;
+    cursor: pointer;
 }
 
 .transporter-button:hover:enabled {
     transform: scale(1.1);
 }
 
-.transporter-button:disabled {
+.transporter-button:disabled,
+.transporter-button:disabled>span {
     color: var(--text-color);
     background-color: var(--background-color);
 
     cursor: auto;
 }
 
-#transporter {
-    text-align: center;
-
-    border-bottom: 1px solid var(--text-color);
-} */
+.transporter-button>span {
+    font-size: 2rem;
+    line-height: 4rem;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                               Part Container                               */
 /* -------------------------------------------------------------------------- */
 
-/* .lcd {
-    padding: 0.5em 1em; */
-/* border: 0px solid; */
-/* border-radius: 5px;
+.lcd {
+    padding: 0.5em 1em;
+    border: 0px solid;
+    border-radius: 5px;
 
     width: 16ch;
-    min-height: 4em;
+    height: 4em;
     line-height: 1.5;
 
     text-align: left;
 
     font-family: 'hd44780', monospace;
+    user-select: none;
 
     color: var(--background-color);
     background-color: var(--text-color);
 }
 
-input[type="range"] {
+/*input[type="range"] {
     margin-top: 1em;
     width: 100%;
 }

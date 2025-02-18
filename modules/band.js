@@ -170,6 +170,14 @@ const HELPER = {
 //#region Band
 export default class Band {
     static partNames = ['bass', 'drum', 'keys', 'lead']
+    static states = Object.freeze({
+        paused: Symbol('paused'),
+        playing: Symbol('playing'),
+        stopping: Symbol('stopping')
+    })
+
+    state = Band.states.paused
+    subscription = () => { }
     parts = Object.fromEntries(Band.partNames.map(name => [name, new Part()]))
 
     tryConfig(config) {
@@ -222,5 +230,13 @@ export default class Band {
     render() { }
 
     setChart(chart) { }
+
+    play() { }
+
+    pause() { }
+
+    stop() { }
+
+    record() { }
 }
 //#endregion

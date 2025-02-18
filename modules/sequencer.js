@@ -27,17 +27,14 @@ export default class Sequencer {
         transporter.connect(paginator, band)
         band.connect(transporter)
 
-        const transporterDiv = transporter.render()
-        const bandDiv = band.render()
-
         function appendToBodyIfDefined(element) {
             if (element) {
                 document.body.append(element)
             }
         }
 
-        appendToBodyIfDefined(transporterDiv)
-        appendToBodyIfDefined(bandDiv)
+        appendToBodyIfDefined(transporter.render())
+        appendToBodyIfDefined(band.render())
 
         paginator.start()
     }
