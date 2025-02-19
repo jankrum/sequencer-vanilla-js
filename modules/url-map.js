@@ -1,4 +1,5 @@
 export default class UrlMap {
+    // Store a value in the URL
     static set(key, value) {
         const urlParams = new URLSearchParams(window.location.search)
         urlParams.set(key, value)
@@ -6,6 +7,7 @@ export default class UrlMap {
         window.history.replaceState(null, '', newUrl)
     }
 
+    // Store a JSON value in the URL
     static setJson(key, value) {
         const jsonString = JSON.stringify(value)
         const base64String = btoa(jsonString)
@@ -13,11 +15,13 @@ export default class UrlMap {
         UrlMap.set(key, encodedConfig)
     }
 
+    // Get a value from the URL
     static get(key) {
         const urlParams = new URLSearchParams(window.location.search)
         return urlParams.get(key)
     }
 
+    // Get a JSON value from the URL
     static getJson(key) {
         const encodedConfig = UrlMap.get(key)
         if (!encodedConfig) {
@@ -29,6 +33,7 @@ export default class UrlMap {
         return JSON.parse(jsonString)
     }
 
+    // Delete a value from the URL
     static delete(key) {
         const urlParams = new URLSearchParams(window.location.search)
         urlParams.delete(key)
@@ -38,6 +43,7 @@ export default class UrlMap {
         window.history.replaceState(null, '', newUrl)
     }
 
+    // Clear all values from the URL
     static clear() {
         window.history.replaceState(null, '', window.location.pathname)
     }

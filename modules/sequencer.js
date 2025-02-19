@@ -23,20 +23,14 @@ export default class Sequencer {
 
         const { paginator, transporter, band } = this
 
-        paginator.connect(transporter, band)
-        transporter.connect(paginator, band)
-        band.connect(transporter)
+        paginator.listenTo(transporter)
+        transporter.listenTo(paginator, band)
+        band.listenTo(paginator, transporter)
 
-        function appendToBodyIfDefined(element) {
-            if (element) {
-                document.body.append(element)
-            }
-        }
+        document.body.append(...[transporter, band].map(obj => obj.render()).filter(x => x))
 
-        appendToBodyIfDefined(transporter.render())
-        appendToBodyIfDefined(band.render())
-
-        paginator.start()
+        // Sends info to transporter and band
+        paginator.notify()
     }
 
     // Returns a bool indicating if the sequencer was able to start from the URL
