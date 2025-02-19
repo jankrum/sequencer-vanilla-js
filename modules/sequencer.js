@@ -1,7 +1,7 @@
 import Paginator from './paginator.js'
 import Transporter from './transporter.js'
 import Band from './band.js'
-import dm from './dm.js'
+import dm, { makeToggleBox } from './dm.js'
 import UrlMap from './url-map.js'
 
 export default class Sequencer {
@@ -30,7 +30,7 @@ export default class Sequencer {
         document.body.append(...[transporter, band].map(obj => obj.render()).filter(x => x))
 
         // Sends info to transporter and band
-        paginator.notify()
+        paginator.start()
     }
 
     // Returns a bool indicating if the sequencer was able to start from the URL
@@ -102,6 +102,7 @@ export default class Sequencer {
         }
 
         if (problems.length > 0) {
+            console.log(problems)
             throw new Error(problems.join('\n'))
         }
     }
@@ -111,8 +112,7 @@ export default class Sequencer {
         const { transporter, band } = this
 
         // Show Chart Source
-        const showChartSourceCheckbox = dm('input', { type: 'checkbox', name: 'show-chart-source' })
-        showChartSourceCheckbox.checked = this.showChartSource
+        const showChartSourceCheckbox = makeToggleBox(this.showChartSource)
         const showChartSourceLabel = dm('label', {}, 'Show Chart Source', showChartSourceCheckbox)
 
         const hr = dm('hr', { class: 'wide' })
@@ -122,11 +122,12 @@ export default class Sequencer {
         const bandConfigs = band.getConfigElements()  // An array of divs
 
         // Miscellaneous Div
-        const refreshMidiButton = dm('button', {}, 'Refresh MIDI Ports')
-        const rememberConfigCheckbox = dm('input', { type: 'checkbox', name: 'remember-config', checked: true })
-        const rememberConfigLabel = dm('label', {}, 'Remember Config', rememberConfigCheckbox)
+        // const refreshMidiSpan = dm('span', { class: 'material-icons' }, 'refresh')
+        // const refreshMidiButton = dm('button', {}, refreshMidiSpan)
+        const rememberConfigToggleBox = makeToggleBox(true)
+        const rememberConfigLabel = dm('label', {}, 'Remember Config', rememberConfigToggleBox)
         const submitButton = dm('button', { type: 'submit' }, 'Submit')
-        const miscellaneousDiv = dm('div', { class: 'wide' }, refreshMidiButton, rememberConfigLabel, submitButton)
+        const miscellaneousDiv = dm('div', { class: 'wide' }, /*refreshMidiButton,*/ rememberConfigLabel, submitButton)
 
         // Config Form
         const configForm = dm('form', { id: 'config' },
@@ -157,7 +158,7 @@ export default class Sequencer {
 
                 this.tryConfig(config)
 
-                if (rememberConfigCheckbox.checked) {
+                if (rememberConfigToggleBox.checked) {
                     UrlMap.setJson(Sequencer.configUrlKey, config)
                 }
 

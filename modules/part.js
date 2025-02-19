@@ -1,4 +1,6 @@
 import dm from './dm.js'
+import Controller from './controller.js'
+import Synthesizer from './synthesizer.js'
 
 export default class Part {
     controller = new Controller()

@@ -78,6 +78,22 @@ label {
     user-select: none;
 }
 
+#config label:has(input[type="checkbox"]) {
+    text-align: center;
+
+    color: var(--text-color);
+    background-color: var(--background-color);
+
+    padding: 0.5rem;
+    border: 1px solid;
+    border-radius: 0.5rem;
+}
+
+#config label:has(input[type="checkbox"]:checked) {
+    color: var(--background-color);
+    background-color: var(--text-color);
+}
+
 .wide {
     width: 100%;
     display: flex;
@@ -113,60 +129,21 @@ input[type="number"]:disabled {
     cursor: not-allowed;
 }
 
-/* #config-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-fieldset {
-    margin-bottom: 20px;
-}
-
-legend {
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.type-div {
-    margin-bottom: 10px;
-}
-
-label {
-    user-select: none;
-}
-
-input[type="radio"]:disabled+label {
-    text-decoration: line-through;
-}
-
-button {
-    color: var(--text-color);
-    background-color: var(--background-color);
-    border: 1px solid var(--text-color);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: var(--text-color);
-    color: var(--background-color);
-} */
-
 /* -------------------------------------------------------------------------- */
 /*                                 Transporter                                */
 /* -------------------------------------------------------------------------- */
 
 #transporter {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-
-    padding-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1.5rem;
 
     border-bottom: 1px solid var(--text-color);
+    width: 100%;
 }
 
 #transporter>div {
@@ -193,21 +170,25 @@ button:hover {
     cursor: pointer;
 }
 
-.transporter-button:hover:enabled {
-    transform: scale(1.1);
-}
-
-.transporter-button:disabled,
-.transporter-button:disabled>span {
-    color: var(--text-color);
-    background-color: var(--background-color);
-
-    cursor: auto;
-}
-
 .transporter-button>span {
     font-size: 2rem;
     line-height: 4rem;
+}
+
+.transporter-button:disabled {
+    cursor: auto
+}
+
+.transporter-button:disabled,
+.transporter-button:has(input[type="checkbox"]:not(:checked)) {
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+.transporter-button:enabled:hover,
+.transporter-button:has(input[type="checkbox"]):hover {
+    transform: scale(1.1);
+    transition: transform 0.1s ease;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -215,6 +196,7 @@ button:hover {
 /* -------------------------------------------------------------------------- */
 
 .lcd {
+    margin: 0;
     padding: 0.5em 1em;
     border: 0px solid;
     border-radius: 5px;

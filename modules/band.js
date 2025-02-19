@@ -27,10 +27,16 @@ export default class Band {
     playbackChangedSubscription = () => { }
 
     // Recording state
-    #isRecording = false
+    #isRecording = true
     isRecordingChangedSubscription = () => { }
 
     schedulerTimeout = 0
+    chartSource = ''
+    load = () => { }
+    eventGenerator = function* () { }
+    startTime = 0
+    durationIntoSong = 0
+    nextEvent = null
 
     // Tries to use config, throws an error if it can't
     tryConfig(config) {
@@ -106,8 +112,12 @@ export default class Band {
     stop() { }
 
     changeChart(chart) {
+        this.state = Band.states.stopped
+
         const load = this.load = () => {
-            console.log('loading chart', chart)
+            // for (const { controller } of Object.values(this.parts)) {
+            //     controller.clear()
+            // }
         }
 
         load()
@@ -161,6 +171,10 @@ export default class Band {
                         // If we are currently stopped and want to play
                         this.play()
                         this.#state = playing
+                        break
+                    case stopped:
+                        // If we are currently stopped and want to stop
+                        // Do nothing
                         break
                     default:
                         throw new Error(`Unsupported Band.state ${newValue}`)

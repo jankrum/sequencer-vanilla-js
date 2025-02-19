@@ -5,11 +5,13 @@ import Transporter from './transporter.js'
 // Imports for the setlist
 import helloWorld from '/charts/hello-world.js'
 import bassScale from '/charts/bass-scale.js'
+import twinkleTwinkleLittleStar from '/charts/twinkle-twinkle-little-star.js'
 
 //#region Setlist
 const setlist = [
     helloWorld,
     bassScale,
+    twinkleTwinkleLittleStar,
 ]
 const setlistLength = setlist.length
 //#endregion

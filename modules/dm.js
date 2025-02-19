@@ -15,3 +15,11 @@ export default function dm(tag, attributes = {}, ...children) {
 
     return element
 }
+
+export function makeToggleBox(on = false, disabled = false) {
+    return dm('input', Object.assign(
+        on ? { checked: true } : {},
+        disabled ? { disabled: true } : {},
+        { class: 'hidden', type: 'checkbox' }
+    ))
+}

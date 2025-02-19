@@ -54,11 +54,7 @@ const MINIMALIST_CONFIG = Object.freeze({
 const MAXIMALIST_CONFIG = Object.freeze({
     showChartSource: true,
     transporter: {
-        isMidi: true,
-        ports: {
-            input: EXISTING_PORT_NAME,
-            output: EXISTING_PORT_NAME,
-        },
+        isMidi: false,
     },
     band: {
         bass: {

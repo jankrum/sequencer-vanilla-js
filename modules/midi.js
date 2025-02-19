@@ -1,5 +1,6 @@
-import dm from './dm.js'
+import dm, { makeToggleBox } from './dm.js'
 
+//#region MIDI Access
 const midiAccess = await (async () => {
     try {
         return await navigator.requestMIDIAccess({ sysex: true })
@@ -9,13 +10,17 @@ const midiAccess = await (async () => {
 })()
 
 const hasMidiAccess = midiAccess !== null
+//#endregion
 
+//-----------------------------------------------------------------------------
+
+//#region MIDI Checkbox
 class MidiCheckbox {
     // Properties
-    isChecked = true
+    isChecked = hasMidiAccess
 
     // Make it now so we can attach event listeners
-    checkbox = dm('input', { type: 'checkbox', checked: this.isChecked })
+    toggleBox = makeToggleBox(this.isChecked)
 
     tryConfig(isMidi) {
         if (isMidi === undefined) {
@@ -34,17 +39,17 @@ class MidiCheckbox {
     }
 
     getConfigElement(name) {
-        const checkbox = this.checkbox
-        checkbox.disabled = !hasMidiAccess
-        checkbox.checked = hasMidiAccess && this.isChecked
+        const toggleBox = this.toggleBox
+        toggleBox.checked = this.isChecked
+        toggleBox.disabled = !hasMidiAccess
 
-        checkbox.addEventListener('change', () => {
-            this.isChecked = checkbox.checked
+        toggleBox.addEventListener('change', () => {
+            this.isChecked = toggleBox.checked
         })
 
-        return dm('label', { class: 'wide' },
+        return dm('label', {},
             dm('b', {}, name),
-            checkbox
+            toggleBox
         )
     }
 
@@ -53,11 +58,14 @@ class MidiCheckbox {
     }
 
     addEventListenerToCheckboxChange(callback) {
-        this.checkbox.addEventListener('change', callback)
+        this.toggleBox.addEventListener('change', callback)
     }
 }
+//#endregion
 
-//#region MIDI PORTS
+//-----------------------------------------------------------------------------
+
+//#region MIDI Port
 class MidiPort {
     // Provide a default blank name for all subclasses
     static blankName = 'No Devices Found';
@@ -146,7 +154,11 @@ class MidiPort {
         this.select.disabled = !hasMidiAccess || value
     }
 }
+//#endregion
 
+//-----------------------------------------------------------------------------
+
+//#region MIDI Input Port
 class InputMidiPort extends MidiPort {
     // Provide static ports for input
     static get ports() {
@@ -159,7 +171,11 @@ class InputMidiPort extends MidiPort {
         return 'Input: '
     }
 }
+//#endregion
 
+//-----------------------------------------------------------------------------
+
+//#region MIDI Output Port
 class OutputMidiPort extends MidiPort {
     // Provide static ports for output
     static get ports() {
@@ -174,6 +190,9 @@ class OutputMidiPort extends MidiPort {
 }
 //#endregion
 
+//-----------------------------------------------------------------------------
+
+//#region MIDI Channel
 class OutputMidiChannel {
     // Properties
     channel = 1
@@ -218,7 +237,11 @@ class OutputMidiChannel {
         this.input.disabled = !hasMidiAccess || value
     }
 }
+//#endregion
 
+//-----------------------------------------------------------------------------
+
+//#region Simplex MIDI
 // An object that represents a simplex midi output connection that
 // communicates with channel messages, so channel must be specified
 export class SimplexMidi {
@@ -280,7 +303,7 @@ export class SimplexMidi {
     }
 
     getConfigElement(name) {
-        const { midiCheckbox, midiCheckbox: { checkbox }, outputMidiPort, outputMidiChannel } = this
+        const { midiCheckbox, midiCheckbox: { toggleBox: checkbox }, outputMidiPort, outputMidiChannel } = this
 
         const updateMidiDisabled = () => {
             const disabled = !checkbox.checked
@@ -312,7 +335,12 @@ export class SimplexMidi {
         } : {})
     }
 }
+//#endregion
 
+//-----------------------------------------------------------------------------
+
+
+//#region Duplex MIDI
 // An object that represents a duplex midi connection that communicates
 // with system messages, so channel does not have to be specified
 export class DuplexMidi {
@@ -386,7 +414,7 @@ export class DuplexMidi {
     }
 
     getConfigElement(name) {
-        const { midiCheckbox, midiCheckbox: { checkbox }, inputMidiPort, outputMidiPort } = this
+        const { midiCheckbox, midiCheckbox: { toggleBox: checkbox }, inputMidiPort, outputMidiPort } = this
 
         const updateMidiDisabled = () => {
             const disabled = !checkbox.checked
@@ -418,3 +446,4 @@ export class DuplexMidi {
         } : {})
     }
 }
+//#endregion

@@ -1,12 +1,12 @@
 import { DuplexMidi } from './midi.js'
 import Paginator from './paginator.js'
 import Band from './band.js'
-import dm from './dm.js'
+import dm, { makeToggleBox } from './dm.js'
 
 //#region DOM Transporter
 function makeIntoDomTransporter(transporter) {
     // The DOM elements
-    const chartTitleHeading = dm('h2', { class: 'lcd' }, 'Da picture')
+    const chartTitleHeading = dm('h2', { class: 'lcd' })
 
     function makeButton(icon) {
         return dm('button', { class: 'transporter-button' },
@@ -18,29 +18,32 @@ function makeIntoDomTransporter(transporter) {
     const playButton = makeButton('play_arrow')
     const pauseButton = makeButton('pause')
     const stopButton = makeButton('stop')
-    const recordButton = makeButton('voicemail')
+    const recordSpan = dm('span', { class: 'material-icons' }, 'voicemail')
+    const recordBox = makeToggleBox(true, true)
+    const recordLabel = dm('label', { class: 'transporter-button' }, recordSpan, recordBox)
     const nextButton = makeButton('skip_next')
 
     // The transporter methods
+    const { previousClicked, playClicked, pauseClicked, stopClicked, recordClicked, nextClicked } = Transporter.eventEnum
     transporter.addEventListener = (action, callback) => {
-        const buttonEventName = 'click'
+        const buttonEventName = 'mousedown'
         switch (action) {
-            case Transporter.eventEnum.previousClicked:
+            case previousClicked:
                 previousButton.addEventListener(buttonEventName, callback)
                 break
-            case Transporter.eventEnum.playClicked:
+            case playClicked:
                 playButton.addEventListener(buttonEventName, callback)
                 break
-            case Transporter.eventEnum.pauseClicked:
+            case pauseClicked:
                 pauseButton.addEventListener(buttonEventName, callback)
                 break
-            case Transporter.eventEnum.stopClicked:
+            case stopClicked:
                 stopButton.addEventListener(buttonEventName, callback)
                 break
-            case Transporter.eventEnum.recordClicked:
-                recordButton.addEventListener(buttonEventName, callback)
+            case recordClicked:
+                recordLabel.addEventListener(buttonEventName, callback)
                 break
-            case Transporter.eventEnum.nextClicked:
+            case nextClicked:
                 nextButton.addEventListener(buttonEventName, callback)
                 break
             default:
@@ -51,7 +54,7 @@ function makeIntoDomTransporter(transporter) {
     transporter.listenTo = (paginator, band) => {
         // Subscribe to paginator changing charts
         paginator.addEventListener(Paginator.eventEnum.chartChanged, ({ chartTitle, canPrevious, canNext }) => {
-            chartTitleHeading.value = chartTitle
+            chartTitleHeading.innerText = chartTitle
             previousButton.disabled = !canPrevious
             nextButton.disabled = !canNext
         })
@@ -65,7 +68,7 @@ function makeIntoDomTransporter(transporter) {
 
         // Subscribe to band changing recording state
         band.addEventListener(Band.eventEnum.isRecordingChanged, ({ isRecording }) => {
-            recordButton.disabled = isRecording
+            recordBox.checked = isRecording
         })
     }
 
@@ -77,7 +80,7 @@ function makeIntoDomTransporter(transporter) {
             playButton,
             pauseButton,
             stopButton,
-            recordButton,
+            recordLabel,
             nextButton,
         ),
     )

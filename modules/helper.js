@@ -6,12 +6,13 @@ const EVENT = Object.freeze({
 })
 
 const TIMING = Object.freeze({
-    convertBeatsToMs(beats, tempo) {
-        return beats * 60000 / tempo
+    convertBpmToMpb(bpm) {
+        return 60000 / bpm
     },
     shorten(durationMs) {
         return Math.max(durationMs - 0.1, durationMs * 0.9)
-    }
+    },
+    COMPUTE_AHEAD_MS: 100,
 })
 
 function midiNoteToPitch(midiNote) {
@@ -50,7 +51,10 @@ function midiNoteToPitch(midiNote) {
     return possibleNotes
 }
 
-const PITCH = Object.freeze(Object.fromEntries([...timesDo(128, midiNoteToPitch)].flat()))
+const PITCH = Object.freeze(Object.assign(
+    { midiNoteToPitch },
+    Object.fromEntries([...timesDo(128, midiNoteToPitch)].flat())
+))
 
 const DYNAMICS = Object.freeze({
     PPPP: 8,
@@ -65,10 +69,11 @@ const DYNAMICS = Object.freeze({
     FFFF: 127,
 })
 
-const HELPER = {
+const HELPER = Object.freeze({
     EVENT,
     TIMING,
-    midiNoteToPitch,
     PITCH,
     DYNAMICS,
-}
+})
+
+export default HELPER
