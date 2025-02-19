@@ -1,6 +1,6 @@
 import { DuplexMidi } from './midi.js'
-import Paginator from './paginator.js'
-import Band from './band.js'
+// import Paginator from './paginator.js'
+// import Band from './band.js'
 import dm, { makeToggleBox } from './dm.js'
 
 //#region DOM Transporter
@@ -108,39 +108,18 @@ export default class Transporter extends DuplexMidi {
         nextClicked: 5,
     })
 
+    static nameInConfig = 'transporter'
+
+    static validateConfig(config) {
+        super.validateConfig(config, Transporter.nameInConfig)
+    }
+
+    static getConfig(config) {
+        return super.getConfig(config, Transporter.nameInConfig)
+    }
+
     constructor() {
         super()
-    }
-
-    tryConfig(config) {
-        if (!config) {
-            throw new Error('Transporter config is required')
-        }
-
-        if (typeof config !== 'object') {
-            throw new Error('Transporter config must be an object')
-        }
-
-        const { isMidi } = config
-
-        if (isMidi === undefined) {
-            throw new Error('Transporter config is missing isMidi')
-        }
-
-        if (typeof isMidi !== 'boolean') {
-            throw new Error('Transporter config isMidi must be a boolean')
-        }
-
-        if (!isMidi) {
-            makeIntoDomTransporter(this)
-        } else {
-            super.tryConfig(config)
-            makeIntoMidiTransporter(this)
-        }
-    }
-
-    getConfigElement() {
-        return super.getConfigElement('TRANSPORTER')
     }
 
     addEventListener(action, callback) {
