@@ -1,6 +1,6 @@
 import UrlMap from './url-map.js'
 import Transporter from './transporter.js'
-// import Band from './band.js'
+import Band from './band.js'
 import dm from './dm.js'
 
 const CONFIG_URL_KEY = 'config'
@@ -22,24 +22,24 @@ function validateConfig(config) {
         problems.push(error.message)
     }
 
-    // try {
-    //     Band.validateConfig(config)
-    // } catch (error) {
-    //     problems.push(error.message)
-    // }
+    try {
+        Band.validateConfig(config)
+    } catch (error) {
+        problems.push(error.message)
+    }
 
     if (problems.length > 0) {
-        throw new Error(`Config is invalid: ${problems.join('\n')}`)
+        throw new Error(['Config has problems:', ...problems].join('\n'))
     }
 }
 
 function getConfigFromUser(configFromUrl) {
     const transporterConfig = Transporter.getConfig(configFromUrl)
-    // const bandConfig = Band.getConfig(configFromUrl)
+    const bandConfig = Band.getConfig(configFromUrl)
 
     const form = dm('form', { id: 'config' },
         ...transporterConfig.elements,
-        // ...bandConfig.elements,
+        ...bandConfig.elements,
         dm('button', { type: 'submit' }, 'Submit'),
     )
 
@@ -51,7 +51,7 @@ function getConfigFromUser(configFromUrl) {
 
             const config = {
                 ...transporterConfig.values,
-                // ...bandConfig.values,
+                ...bandConfig.values,
             }
 
             try {
@@ -69,15 +69,14 @@ function getConfigFromUser(configFromUrl) {
 }
 
 export async function getConfig() {
-    let configFromUrl = null
+    const configFromUrl = UrlMap.getJson(CONFIG_URL_KEY)
 
     try {
-        configFromUrl = UrlMap.getJson(CONFIG_URL_KEY)
         validateConfig(configFromUrl)
         return configFromUrl
     }
-    catch (e) {
-        console.error(e)
+    catch (error) {
+        console.warn(error)
         UrlMap.delete(CONFIG_URL_KEY)
     }
 

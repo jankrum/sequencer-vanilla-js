@@ -1,6 +1,7 @@
 import Paginator from './paginator.js'
 import Transporter from './transporter.js'
 import Part from './part.js'
+import dm, { makeToggleBox } from './dm.js'
 
 //#region Band
 export default class Band {
@@ -38,17 +39,22 @@ export default class Band {
     durationIntoSong = 0
     nextEvent = null
 
-    // Tries to use config, throws an error if it can't
-    tryConfig(config) {
-        if (!config) {
-            throw new Error('band config is required')
-        }
-
-        if (typeof config !== 'object') {
-            throw new Error('band config must be an object')
-        }
+    static validateConfig(config) {
+        const { record, showSource } = config
 
         const problems = []
+
+        if (record === undefined) {
+            problems.push('record config is required')
+        } else if (typeof record !== 'boolean') {
+            problems.push('record config must be a boolean')
+        }
+
+        if (showSource === undefined) {
+            problems.push('showSource config is required')
+        } else if (typeof showSource !== 'boolean') {
+            problems.push('showSource config must be a boolean')
+        }
 
         for (const partName of Band.partNames) {
             try {
@@ -64,8 +70,7 @@ export default class Band {
                     throw new Error(`${partName} config must be an object`)
                 }
 
-                // Try to configure the part with the part in the config
-                this.parts[partName].tryConfig(partInConfig)
+                Part.validateConfig(partInConfig)
             } catch (error) {
                 problems.push(error.message)
             }
@@ -77,13 +82,30 @@ export default class Band {
     }
 
     // Get the config elements for the band
-    getConfigElements() {
-        return Band.partNames.map(name => this.parts[name].getConfigElement(name))
-    }
+    static getConfig(config) {
+        const partConfigs = Object.fromEntries(Band.partNames.map(name => [name, Part.getConfig(config?.[name], name)]))
 
-    // Get the config values for the band
-    getConfigValues() {
-        return Object.fromEntries(Band.partNames.map(name => [name, this.parts[name].getConfigValues()]))
+        const recordToggleBox = makeToggleBox(config?.record ?? true)
+        const recordLabel = dm('label', {}, 'Record Performances', recordToggleBox)
+        const showSourceToggleBox = makeToggleBox(config?.showSource ?? true)
+        const showSourceLabel = dm('label', {}, 'Show Source', showSourceToggleBox)
+
+        return {
+            elements: [
+                ...Object.values(partConfigs).map(({ elements }) => elements).flat(),
+                dm('div', { class: 'wide' },
+                    recordLabel,
+                    showSourceLabel,
+                ),
+            ],
+            get values() {
+                return {
+                    ...Object.fromEntries(Object.entries(partConfigs).map(([name, { values }]) => [name, values])),
+                    record: recordToggleBox.checked,
+                    showSource: showSourceToggleBox.checked,
+                }
+            }
+        }
     }
 
     // Subscribe to an event

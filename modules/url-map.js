@@ -23,14 +23,19 @@ export default class UrlMap {
 
     // Get a JSON value from the URL
     static getJson(key) {
-        const encodedConfig = UrlMap.get(key)
-        if (!encodedConfig) {
+        try {
+            const encodedConfig = UrlMap.get(key)
+            if (!encodedConfig) {
+                return null
+            }
+
+            const base64String = decodeURIComponent(encodedConfig)
+            const jsonString = atob(base64String)
+            return JSON.parse(jsonString)
+        } catch (error) {
+            UrlMap.delete(key)
             return null
         }
-
-        const base64String = decodeURIComponent(encodedConfig)
-        const jsonString = atob(base64String)
-        return JSON.parse(jsonString)
     }
 
     // Delete a value from the URL

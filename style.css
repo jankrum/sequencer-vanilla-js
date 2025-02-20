@@ -87,6 +87,8 @@ label {
     padding: 0.5rem;
     border: 1px solid;
     border-radius: 0.5rem;
+
+    cursor: pointer;
 }
 
 #config label:has(input[type="checkbox"]:checked) {
@@ -121,6 +123,13 @@ label {
     margin: 1rem;
     padding: 1rem;
     gap: 1rem;
+}
+
+#config label:has(select) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 select:disabled,

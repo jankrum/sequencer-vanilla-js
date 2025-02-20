@@ -1,11 +1,17 @@
 import { DuplexMidi } from './midi.js'
 
 export default class Controller extends DuplexMidi {
-    constructor() {
-        super()
+    static nameInConfig = 'controller'
+
+    static validateConfig(config) {
+        super.validateConfig(config, Controller.nameInConfig)
     }
 
-    getConfigElement(name) {
-        return super.getConfigElement('CONTROLLER')
+    static getConfig(config) {
+        return super.getConfig(config, Controller.nameInConfig)
+    }
+
+    constructor() {
+        super()
     }
 }

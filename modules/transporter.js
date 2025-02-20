@@ -1,6 +1,6 @@
 import { DuplexMidi } from './midi.js'
-// import Paginator from './paginator.js'
-// import Band from './band.js'
+import Paginator from './paginator.js'
+import Band from './band.js'
 import dm, { makeToggleBox } from './dm.js'
 
 //#region DOM Transporter
@@ -118,8 +118,14 @@ export default class Transporter extends DuplexMidi {
         return super.getConfig(config, Transporter.nameInConfig)
     }
 
-    constructor() {
+    constructor(config) {
         super()
+
+        if (config.transporter.isMidi === false) {
+            makeIntoDomTransporter(this)
+        } else {
+            makeIntoMidiTransporter(this)
+        }
     }
 
     addEventListener(action, callback) {
