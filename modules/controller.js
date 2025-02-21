@@ -1,17 +1,26 @@
 import { DuplexMidi } from './midi.js'
 
-export default class Controller extends DuplexMidi {
+class DomController {
+
+}
+
+export default class Controller {
     static nameInConfig = 'controller'
 
     static validateConfig(config) {
-        super.validateConfig(config, Controller.nameInConfig)
+        DuplexMidi.validateConfig(config, Controller.nameInConfig)
     }
 
     static getConfig(config) {
-        return super.getConfig(config, Controller.nameInConfig)
+        return DuplexMidi.getConfig(config, Controller.nameInConfig)
     }
 
-    constructor() {
-        super()
+    static build(config) {
+        console.log(config)
+        if (config.isMidi === false) {
+            return new DomController()
+        } else {
+            throw new Error('MIDI controller not implemented')
+        }
     }
 }

@@ -8,7 +8,7 @@ const config = await getConfig()
 console.log(config)
 
 const paginator = new Paginator(config)
-const transporter = new Transporter(config)
+const transporter = Transporter.build(config)
 const band = new Band(config)
 
 paginator.listenTo(transporter)
@@ -16,12 +16,12 @@ transporter.listenTo(paginator, band)
 band.listenTo(paginator, transporter)
 
 // Add the elements from the objects to the body if they are not null
-const getElement = obj => obj.render()
-const isNotNull = x => x !== null
-document.body.append(...[transporter, /*band*/]
-    .map(getElement)
-    .filter(isNotNull)
-)
+const elements = [transporter, band]
+    .map(object => object.getElements())  // Get the elements from the objects
+    .flat()  // Flatten the array of arrays
+    .filter(ele => ele)  // Filter out the null elements
+
+document.body.append(...elements)
 
 // Sends info to transporter and band
 paginator.start()

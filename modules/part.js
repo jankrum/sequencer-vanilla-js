@@ -110,11 +110,22 @@ export default class Part {
                 ...synthesizerConfig.elements
             )],
             get values() {
-                return {
-                    controller: controllerConfig.values,
-                    synthesizer: synthesizerConfig.values,
+                console.log('Getting part values')
+                const partValues = {
+                    ...controllerConfig.values,
+                    ...synthesizerConfig.values,
                 }
+
+                console.log('partValues', partValues)
+                return partValues
             }
         }
+    }
+
+    constructor(config, name) {
+        this.name = name
+        console.log(config)
+        this.controller = Controller.build(config.controller)
+        this.synthesizer = Synthesizer.build(config.synthesizer)
     }
 }

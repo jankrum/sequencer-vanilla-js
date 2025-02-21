@@ -75,9 +75,9 @@ export default class Paginator {
         const { previousClicked, nextClicked } = Transporter.eventEnum
 
         // Subscribe to the Transporter's previous button
-        transporter.addEventListener(previousClicked, () => { this.chartIndex-- })
+        transporter.addEventListener(previousClicked, () => this.chartIndex--)
 
-        transporter.addEventListener(nextClicked, () => { this.chartIndex++ })
+        transporter.addEventListener(nextClicked, () => this.chartIndex++)
     }
 
     // Start the Paginator, which will send events to the transporter and band

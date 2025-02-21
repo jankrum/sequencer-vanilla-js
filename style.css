@@ -179,25 +179,20 @@ input[type="number"]:disabled {
     cursor: pointer;
 }
 
-.transporter-button>span {
-    font-size: 2rem;
-    line-height: 4rem;
-}
-
 .transporter-button:disabled {
+    color: var(--text-color);
+    background-color: var(--background-color);
     cursor: auto
 }
 
-.transporter-button:disabled,
-.transporter-button:has(input[type="checkbox"]:not(:checked)) {
-    color: var(--text-color);
-    background-color: var(--background-color);
-}
-
-.transporter-button:enabled:hover,
-.transporter-button:has(input[type="checkbox"]):hover {
+.transporter-button:enabled:hover {
     transform: scale(1.1);
     transition: transform 0.1s ease;
+}
+
+.transporter-button>span {
+    font-size: 2rem;
+    line-height: 4rem;
 }
 
 /* -------------------------------------------------------------------------- */

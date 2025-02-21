@@ -16,28 +16,10 @@ export default class Band {
 
     // Event types
     static eventEnum = Object.freeze({
-        playbackChanged: 0,
-        isRecordingChanged: 1,
+        play: 0,
+        pause: 1,
+        stop: 2,
     })
-
-    // The parts of the band
-    parts = Object.fromEntries(Band.partNames.map(name => [name, new Part()]))
-
-    // Playback state
-    #state = Band.states.paused
-    playbackChangedSubscription = () => { }
-
-    // Recording state
-    #isRecording = true
-    isRecordingChangedSubscription = () => { }
-
-    schedulerTimeout = 0
-    chartSource = ''
-    load = () => { }
-    eventGenerator = function* () { }
-    startTime = 0
-    durationIntoSong = 0
-    nextEvent = null
 
     static validateConfig(config) {
         const { record, showSource } = config
@@ -100,7 +82,7 @@ export default class Band {
             ],
             get values() {
                 return {
-                    ...Object.fromEntries(Object.entries(partConfigs).map(([name, { values }]) => [name, values])),
+                    ...Object.fromEntries(Object.entries(partConfigs).map(([name, ele]) => [name, ele.values])),
                     record: recordToggleBox.checked,
                     showSource: showSourceToggleBox.checked,
                 }
@@ -108,30 +90,69 @@ export default class Band {
         }
     }
 
+    // The parts of the band
+    parts = {}
+
+    // Playback state
+    #state = Band.states.paused
+    playSubscription = () => { }
+    pauseSubscription = () => { }
+    stopSubscription = () => { }
+
+    schedulerTimeout = 0
+    chartSource = ''
+    load = () => { }
+    eventGenerator = function* () { }
+    startTime = 0
+    durationIntoSong = 0
+    nextEvent = null
+
+    constructor(config) {
+        const { record, showSource } = config
+
+        this.record = record
+        this.showSource = showSource
+
+        for (const partName of Band.partNames) {
+            this.parts[partName] = new Part(config[partName], partName)
+        }
+    }
+
     // Subscribe to an event
     addEventListener(action, callback) {
-        const { playbackChanged, isRecordingChanged } = Band.eventEnum
+        const { play, pause, stop } = Band.eventEnum
 
         // We use a single value to store the subscription because there will only be one subscriber per event
         switch (action) {
-            case playbackChanged:
-                this.playbackChangedSubscription = callback
+            case play:
+                this.playSubscription = callback
                 break
-            case isRecordingChanged:
-                this.isRecordingChangedSubscription = callback
+            case pause:
+                this.pauseSubscription = callback
+                break
+            case stop:
+                this.stopSubscription = callback
                 break
             default:
                 throw new Error(`Unsupported action ${action} in Band.addEventListener()`)
         }
     }
 
-    play() { }
+    play() {
+        this.playSubscription()
+    }
 
-    pause() { }
+    pause() {
+        this.pauseSubscription()
+    }
 
-    resume() { }
+    resume() {
+        this.playSubscription()
+    }
 
-    stop() { }
+    stop() {
+        this.stopSubscription()
+    }
 
     changeChart(chart) {
         this.state = Band.states.stopped
@@ -205,35 +226,24 @@ export default class Band {
             default:
                 throw new Error(`Unsupported state ${this.#state} in Band.state`)
         }
-
-        // Notify the subscriber to the event
-        this.playbackChangedSubscription({ playbackState: this.#state })
-    }
-
-    // Toggles the recording state and notifies the subscriber
-    toggleIsRecording() {
-        this.isRecordingChangedSubscription({
-            isRecording: this.#isRecording = !this.#isRecording,
-        })
     }
 
     // Subscribe to events from the paginator and transporter
     listenTo(paginator, transporter) {
         // Subscribe to the Paginator's chartChanged event
-        const { chartChanged } = Paginator.eventEnum
-
-        paginator.addEventListener(chartChanged, ({ chart }) => this.changeChart(chart))
+        paginator.addEventListener(Paginator.eventEnum.chartChanged, ({ chart }) => this.changeChart(chart))
 
         // Subscribe to the Transporter's play, pause, stop and record buttons
-        const { playClicked, pauseClicked, stopClicked, recordClicked } = Transporter.eventEnum
+        const { playClicked, pauseClicked, stopClicked } = Transporter.eventEnum
         const { playing, paused, stopped } = Band.states
 
         transporter.addEventListener(playClicked, () => this.state = playing)
         transporter.addEventListener(pauseClicked, () => this.state = paused)
         transporter.addEventListener(stopClicked, () => this.state = stopped)
-        transporter.addEventListener(recordClicked, () => this.toggleIsRecording())
     }
 
-    render() { }
+    getElements() {
+        return []
+    }
 }
 //#endregion

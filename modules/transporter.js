@@ -1,143 +1,128 @@
 import { DuplexMidi } from './midi.js'
 import Paginator from './paginator.js'
 import Band from './band.js'
-import dm, { makeToggleBox } from './dm.js'
+import dm from './dm.js'
 
 //#region DOM Transporter
-function makeIntoDomTransporter(transporter) {
-    // The DOM elements
-    const chartTitleHeading = dm('h2', { class: 'lcd' })
-
-    function makeButton(icon) {
+class DomTransporter {
+    static makeButton(icon) {
         return dm('button', { class: 'transporter-button' },
             dm('span', { class: 'material-icons' }, icon)
         )
     }
 
-    const previousButton = makeButton('skip_previous')
-    const playButton = makeButton('play_arrow')
-    const pauseButton = makeButton('pause')
-    const stopButton = makeButton('stop')
-    const recordSpan = dm('span', { class: 'material-icons' }, 'voicemail')
-    const recordBox = makeToggleBox(true, true)
-    const recordLabel = dm('label', { class: 'transporter-button' }, recordSpan, recordBox)
-    const nextButton = makeButton('skip_next')
+    static buttonNamesAndIcons = [
+        ['previous', 'skip_previous'],
+        ['play', 'play_arrow'],
+        ['pause', 'pause'],
+        ['stop', 'stop'],
+        ['next', 'skip_next'],
+    ]
 
-    // The transporter methods
-    const { previousClicked, playClicked, pauseClicked, stopClicked, recordClicked, nextClicked } = Transporter.eventEnum
-    transporter.addEventListener = (action, callback) => {
-        const buttonEventName = 'mousedown'
+    chartTitleHeading = dm('h2', { class: 'lcd' })
+    buttons = Object.fromEntries(DomTransporter.buttonNamesAndIcons.map(([name, icon]) => [name, DomTransporter.makeButton(icon)]))
+
+    addEventListener(action, callback) {
+        const { previousClicked, playClicked, pauseClicked, stopClicked, nextClicked } = Transporter.eventEnum
+        const { buttons } = this
+        const eventName = 'mousedown'
+
         switch (action) {
             case previousClicked:
-                previousButton.addEventListener(buttonEventName, callback)
+                buttons.previous.addEventListener(eventName, callback)
                 break
             case playClicked:
-                playButton.addEventListener(buttonEventName, callback)
+                buttons.play.addEventListener(eventName, callback)
                 break
             case pauseClicked:
-                pauseButton.addEventListener(buttonEventName, callback)
+                buttons.pause.addEventListener(eventName, callback)
                 break
             case stopClicked:
-                stopButton.addEventListener(buttonEventName, callback)
-                break
-            case recordClicked:
-                recordLabel.addEventListener(buttonEventName, callback)
+                buttons.stop.addEventListener(eventName, callback)
                 break
             case nextClicked:
-                nextButton.addEventListener(buttonEventName, callback)
+                buttons.next.addEventListener(eventName, callback)
                 break
             default:
                 throw new Error(`Unsupported action ${action} in Transporter.addEventListener()`)
         }
     }
 
-    transporter.listenTo = (paginator, band) => {
-        // Subscribe to paginator changing charts
+    listenTo(paginator, band) {
+        const { buttons } = this
+
         paginator.addEventListener(Paginator.eventEnum.chartChanged, ({ chartTitle, canPrevious, canNext }) => {
-            chartTitleHeading.innerText = chartTitle
-            previousButton.disabled = !canPrevious
-            nextButton.disabled = !canNext
+            this.chartTitleHeading.innerText = chartTitle
+            buttons.previous.disabled = !canPrevious
+            buttons.next.disabled = !canNext
         })
 
-        // Subscribe to band changing playback state
-        band.addEventListener(Band.eventEnum.playbackChanged, ({ playbackState }) => {
-            playButton.disabled = playbackState === Band.states.playing
-            pauseButton.disabled = playbackState !== Band.states.playing
-            stopButton.disabled = playbackState === Band.states.stopped
+        band.addEventListener(Band.eventEnum.play, () => {
+            buttons.play.disabled = true
+            buttons.pause.disabled = false
+            buttons.stop.disabled = false
         })
 
-        // Subscribe to band changing recording state
-        band.addEventListener(Band.eventEnum.isRecordingChanged, ({ isRecording }) => {
-            recordBox.checked = isRecording
+        band.addEventListener(Band.eventEnum.pause, () => {
+            buttons.play.disabled = false
+            buttons.pause.disabled = true
+            buttons.stop.disabled = false
+        })
+
+        band.addEventListener(Band.eventEnum.stop, () => {
+            buttons.play.disabled = false
+            buttons.pause.disabled = true
+            buttons.stop.disabled = true
         })
     }
 
-    // Render the DOM
-    transporter.render = () => dm('div', { id: 'transporter' },
-        chartTitleHeading,
-        dm('div', {},
-            previousButton,
-            playButton,
-            pauseButton,
-            stopButton,
-            recordLabel,
-            nextButton,
-        ),
-    )
+    getElements() {
+        return [dm('div', { id: 'transporter' },
+            this.chartTitleHeading,
+            dm('div', {},
+                ...Object.values(this.buttons),
+            ),
+        ),]
+    }
 }
 //#endregion
 
 //-----------------------------------------------------------------------------
 
 //#region MIDI Transporter
-function makeIntoMidiTransporter(transporter) {
-    throw new Error('MIDI transporter not implemented')
-}
+// function makeIntoMidiTransporter(transporter) {
+//     throw new Error('MIDI transporter not implemented')
+// }
 //#endregion
 
 //-----------------------------------------------------------------------------
 
 //#region Transporter
-export default class Transporter extends DuplexMidi {
+export default class Transporter {
     static eventEnum = Object.freeze({
         previousClicked: 0,
         playClicked: 1,
         pauseClicked: 2,
         stopClicked: 3,
-        recordClicked: 4,
-        nextClicked: 5,
+        nextClicked: 4,
     })
 
     static nameInConfig = 'transporter'
 
     static validateConfig(config) {
-        super.validateConfig(config, Transporter.nameInConfig)
+        DuplexMidi.validateConfig(config, Transporter.nameInConfig)
     }
 
     static getConfig(config) {
-        return super.getConfig(config, Transporter.nameInConfig)
+        return DuplexMidi.getConfig(config, Transporter.nameInConfig)
     }
 
-    constructor(config) {
-        super()
-
+    static build(config) {
         if (config.transporter.isMidi === false) {
-            makeIntoDomTransporter(this)
+            return new DomTransporter()
         } else {
-            makeIntoMidiTransporter(this)
+            throw new Error('MIDI transporter not implemented')
         }
-    }
-
-    addEventListener(action, callback) {
-        throw new Error('Cannot call addEventListener() on abstract Transporter')
-    }
-
-    listenTo() {
-        throw new Error('Cannot call listenTo() on abstract Transporter')
-    }
-
-    render() {
-        throw new Error('Cannot call render() on abstract Transporter')
     }
 }
 //#endregion
